@@ -20,25 +20,32 @@ export async function POST(request) {
     );
   }
 
-  await connectToDatabase();
+  try {
+    await connectToDatabase();
 
-  const admin = await Admin.findOne({ username });
-  if (!admin) {
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      return Response.json(
+        { error: "Invalid username or password" },
+        { status: 401 }
+      );
+    }
+
+    const passwordMatches = await bcrypt.compare(password, admin.passwordHash);
+    if (!passwordMatches) {
+      return Response.json(
+        { error: "Invalid username or password" },
+        { status: 401 }
+      );
+    }
+
+    await createSession(admin.username);
+
+    return Response.json({ ok: true, username: admin.username });
+  } catch (err) {
     return Response.json(
-      { error: "Invalid username or password" },
-      { status: 401 }
+      { error: `Database error: ${err.message}` },
+      { status: 500 }
     );
   }
-
-  const passwordMatches = await bcrypt.compare(password, admin.passwordHash);
-  if (!passwordMatches) {
-    return Response.json(
-      { error: "Invalid username or password" },
-      { status: 401 }
-    );
-  }
-
-  await createSession(admin.username);
-
-  return Response.json({ ok: true, username: admin.username });
 }
