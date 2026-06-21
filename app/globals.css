@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────
+   Pure Deshi — Brand Design Tokens (Section 3 of project spec)
+   These exact hex values are fixed by the brand mockups —
+   do not change them without checking the mockup files.
+   ───────────────────────────────────────────────────────── */
+:root {
+  /* Brand colors — fixed in both light & dark mode */
+  --brand-green-900: #173404;
+  --brand-green-800: #27500A;
+  --brand-green-700: #3B6D11;
+  --brand-green-100: #C0DD97;
+  --brand-green-50: #EAF3DE;
+  --brand-amber-900: #412402;
+  --brand-amber-400: #BA7517;
+  --brand-amber-200: #EF9F27;
+  --brand-amber-100: #FAC775;
+  --brand-amber-50: #FAEEDA;
+  --brand-coral-600: #993C1D;
+  --brand-coral-50: #FAECE7;
+
+  /* Semantic surface/text colors — these DO adapt between light/dark */
+  --background: #ffffff;
+  --foreground: var(--brand-green-900);
+  --surface: var(--brand-green-50);
+}
+
+body.dark {
+  --background: var(--brand-green-900);
+  --foreground: var(--brand-green-100);
+  --surface: #1f3a0c;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+
+  --color-brand-green-900: var(--brand-green-900);
+  --color-brand-green-800: var(--brand-green-800);
+  --color-brand-green-700: var(--brand-green-700);
+  --color-brand-green-100: var(--brand-green-100);
+  --color-brand-green-50: var(--brand-green-50);
+  --color-brand-amber-900: var(--brand-amber-900);
+  --color-brand-amber-400: var(--brand-amber-400);
+  --color-brand-amber-200: var(--brand-amber-200);
+  --color-brand-amber-100: var(--brand-amber-100);
+  --color-brand-amber-50: var(--brand-amber-50);
+  --color-brand-coral-600: var(--brand-coral-600);
+  --color-brand-coral-50: var(--brand-coral-50);
+
+  --font-heading: var(--font-heading);
+  --font-body: var(--font-body);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading), sans-serif;
+}
