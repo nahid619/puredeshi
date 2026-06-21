@@ -1,5 +1,7 @@
 import Image from "next/image";
 import SetupStatus from "@/components/SetupStatus";
+import AdminLoginPanel from "@/components/AdminLoginPanel";
+import CatalogPreview from "@/components/CatalogPreview";
 
 export default function Home() {
   return (
@@ -22,16 +24,18 @@ export default function Home() {
       </div>
 
       <span className="inline-block rounded-full bg-[var(--brand-green-800)] text-[var(--brand-amber-50)] text-xs font-semibold px-4 py-1.5 tracking-wide">
-        PHASE 1 — INFRASTRUCTURE SETUP
+        PHASE 2 — DATA LAYER &amp; AUTH
       </span>
 
       <p className="max-w-md text-sm opacity-80">
-        This is a placeholder page confirming the project is running correctly.
-        The real homepage (sections, products, language toggle, etc.) gets
-        built in Phase 4.
+        This is still a placeholder page, not the real homepage (that&apos;s
+        Phase 4). These panels exist only to prove the database, seed data,
+        and admin login all work correctly.
       </p>
 
       <SetupStatus />
+      <AdminLoginPanel />
+      <CatalogPreview />
     </main>
   );
 }
