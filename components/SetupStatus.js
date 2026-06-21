@@ -50,6 +50,9 @@ export default function SetupStatus() {
   }
 
   useEffect(() => {
+    // Standard "fetch on mount" pattern — safe here since check() always
+    // resolves (it catches its own errors) and this only runs once.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     check();
   }, []);
 
