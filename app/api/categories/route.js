@@ -2,6 +2,7 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
 import Category from "@/models/Category";
+import { friendlyDbError } from "@/lib/errors";
 
 // GET /api/categories — public, used by the homepage to render category nav
 export async function GET() {
@@ -36,6 +37,6 @@ export async function POST(request) {
     const category = await Category.create(body);
     return Response.json(category, { status: 201 });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 400 });
+    return Response.json({ error: friendlyDbError(err) }, { status: 400 });
   }
 }

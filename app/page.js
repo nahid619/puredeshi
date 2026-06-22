@@ -1,7 +1,6 @@
+import Link from "next/link";
 import Image from "next/image";
 import SetupStatus from "@/components/SetupStatus";
-import AdminLoginPanel from "@/components/AdminLoginPanel";
-import CatalogPreview from "@/components/CatalogPreview";
 
 export default function Home() {
   return (
@@ -24,18 +23,23 @@ export default function Home() {
       </div>
 
       <span className="inline-block rounded-full bg-[var(--brand-green-800)] text-[var(--brand-amber-50)] text-xs font-semibold px-4 py-1.5 tracking-wide">
-        PHASE 2 — DATA LAYER &amp; AUTH
+        PHASE 3 — ADMIN PANEL
       </span>
 
       <p className="max-w-md text-sm opacity-80">
         This is still a placeholder page, not the real homepage (that&apos;s
-        Phase 4). These panels exist only to prove the database, seed data,
-        and admin login all work correctly.
+        Phase 4). The real, working admin panel is now live — log in below to
+        manage products, categories, combos, banners, and settings.
       </p>
 
+      <Link
+        href="/admin/login"
+        className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-[var(--brand-amber-200)] to-[var(--brand-amber-400)] text-[var(--brand-amber-900)] text-sm font-semibold px-5 py-2.5"
+      >
+        অ্যাডমিন প্যানেলে যান →
+      </Link>
+
       <SetupStatus />
-      <AdminLoginPanel />
-      <CatalogPreview />
     </main>
   );
 }

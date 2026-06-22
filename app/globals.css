@@ -19,6 +19,16 @@
   --brand-amber-50: #FAEEDA;
   --brand-coral-600: #993C1D;
   --brand-coral-50: #FAECE7;
+  --brand-coral-700: #7A2E14;
+
+  /* Admin-only neutral grays (Section 8 of spec — "functional tool" look) */
+  --admin-gray-50: #F7F8F4;
+  --admin-gray-100: #EFF1EA;
+  --admin-gray-200: #E1E4D9;
+  --admin-gray-400: #A6AC97;
+  --admin-gray-500: #7C8270;
+  --admin-gray-700: #454B3B;
+  --admin-gray-900: #22271A;
 
   /* Semantic surface/text colors — these DO adapt between light/dark */
   --background: #ffffff;
@@ -49,6 +59,15 @@ body.dark {
   --color-brand-amber-50: var(--brand-amber-50);
   --color-brand-coral-600: var(--brand-coral-600);
   --color-brand-coral-50: var(--brand-coral-50);
+  --color-brand-coral-700: var(--brand-coral-700);
+
+  --color-admin-gray-50: var(--admin-gray-50);
+  --color-admin-gray-100: var(--admin-gray-100);
+  --color-admin-gray-200: var(--admin-gray-200);
+  --color-admin-gray-400: var(--admin-gray-400);
+  --color-admin-gray-500: var(--admin-gray-500);
+  --color-admin-gray-700: var(--admin-gray-700);
+  --color-admin-gray-900: var(--admin-gray-900);
 
   --font-heading: var(--font-heading);
   --font-body: var(--font-body);
@@ -62,4 +81,51 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), sans-serif;
+}
+
+/* ── Admin panel component classes (Section 8 of spec) ───────────────────
+   A few small custom classes for patterns (toggle switch, price styling)
+   that are clearer as named classes than long Tailwind utility chains. */
+
+.admin-switch {
+  position: relative;
+  width: 40px;
+  height: 22px;
+  background: var(--admin-gray-200);
+  border-radius: 999px;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+.admin-switch.on {
+  background: var(--brand-green-700);
+}
+.admin-switch::after {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s ease;
+}
+.admin-switch.on::after {
+  transform: translateX(18px);
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: var(--admin-gray-400);
+  font-size: 0.75rem;
+  margin-right: 6px;
+}
+.price-now {
+  font-weight: 700;
+}
+.price-now.sale {
+  color: var(--brand-coral-600);
+}
+.price-now.normal {
+  color: var(--brand-green-800);
 }

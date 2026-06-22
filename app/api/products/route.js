@@ -2,6 +2,7 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
 import Product from "@/models/Product";
+import { friendlyDbError } from "@/lib/errors";
 
 // GET /api/products — public. Supports ?category=<id> filter for later use
 // by the homepage's category sections.
@@ -45,6 +46,6 @@ export async function POST(request) {
     const product = await Product.create(body);
     return Response.json(product, { status: 201 });
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 400 });
+    return Response.json({ error: friendlyDbError(err) }, { status: 400 });
   }
 }

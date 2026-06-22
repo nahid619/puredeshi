@@ -2,6 +2,7 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
 import Category from "@/models/Category";
+import { friendlyDbError } from "@/lib/errors";
 
 export async function GET(request, { params }) {
   const { id } = await params;
@@ -45,7 +46,7 @@ export async function PUT(request, { params }) {
     }
     return Response.json(category);
   } catch (err) {
-    return Response.json({ error: err.message }, { status: 400 });
+    return Response.json({ error: friendlyDbError(err) }, { status: 400 });
   }
 }
 
