@@ -1,143 +1,135 @@
 # Pure Deshi — Website Project
 
 This is the real codebase for the Pure Deshi website, being built in phases.
-**This delivery is cumulative Phases 1–3: Infrastructure + Data Layer/Auth + Admin Panel.**
-
-If you've never run a Next.js project before, follow every step below exactly
-— don't skip anything, even if it looks obvious.
+**This delivery is cumulative Phases 1–4: Infrastructure + Data Layer/Auth +
+Admin Panel + the real public website.**
 
 ---
 
-## What's in this delivery
+## What's new in Phase 4 — the real public site
 
-**From Phase 1 (infrastructure):** Next.js project, brand fonts/colors, logo,
-MongoDB/Cloudinary connection helpers.
+The placeholder homepage is gone. `http://localhost:3000` is now the actual
+Pure Deshi homepage, built exactly to the mockup, but with every number,
+name, and price pulled live from your database instead of hardcoded:
 
-**From Phase 2 (data layer & auth):** Database structure (Product, Category,
-Combo, Banner, Settings, Admin, ClickLog), the `npm run seed` script, working
-API routes, admin login.
+- **Hero** — headline + a "trending product" spotlight card (whichever
+  product has the new "হিরো স্পটলাইটে দেখান" toggle on in the admin panel)
+- **Trust strip, category tiles, story section, testimonials** — testimonials
+  are still placeholder text on purpose (Phase 5 replaces them with real
+  Facebook reviews)
+- **A product grid section for every category you have**, in the order
+  you've set — add a category in the admin panel and a whole new homepage
+  section appears automatically, no code changes
+- **Combo offer banner** — shows automatically if you have an active combo,
+  hides itself if you don't
+- **Language toggle (বাং/EN)** and **dark/light mode** — top-right pills,
+  affects the entire page instantly
+- **Real WhatsApp ordering** — every "Order Now" button (product cards, hero
+  spotlight, combo banner, floating button) opens WhatsApp with a message
+  built from your actual Settings template and the real product name/price
+- **Product detail pages** at `/products/<slug>` — the Naturo-style template
+  (intro → benefits → ingredients → usage → why us) using whatever you typed
+  into each product's content fields in the admin panel
+- **Scroll-reveal animations** on every section, matching the mockup
 
-**New in Phase 3 — the real admin panel** at `/admin`:
-- A proper sidebar + login screen, matching the admin mockup you sent
-- **Products tab** — search/filter, table, add/edit form with a live preview
-  card that updates as you type, real Cloudinary image upload, stock and
-  "featured" toggles, star-to-feature shortcut right in the table
-- **Categories tab** — add/edit/delete, shows how many products use each one
-- **Combos tab** — bundle multiple products together with a combo price
-- **Banners tab** — upload homepage banner images, set links, reorder with
-  up/down arrows
-- **Settings tab** — WhatsApp number, order message templates, Facebook link
-- **Dashboard tab** — total products, stock-out count, and (once the public
-  site is live in Phase 4) order-click stats
-
-The homepage placeholder is now just a single "Go to Admin Panel" button —
-the old test panels from Phase 1/2 have been retired since the real thing now
-exists.
+### Two small fixes worth knowing about
+1. The database already had an `isTrending` field meant to drive the hero
+   spotlight, separate from the "ফিচার্ড" toggle — but the Phase 3 admin
+   panel never exposed a control for it. I added one ("হিরো স্পটলাইটে দেখান")
+   in the product form. The "ফিচার্ড" toggle now does something slightly
+   different and more useful: it just sorts that product to the front of its
+   own category grid.
+2. Categories now have an optional **tagline** (e.g. "Kitchen essentials"
+   above "Ghee & Oil") — editable in the admin Categories tab. The 4 seeded
+   categories already have the same taglines as the original mockup.
 
 ---
 
-## Step-by-step: how to run this on your computer
+## Step-by-step: how to test this
 
-### 1. Install Node.js (skip if already done)
-Download the **LTS** version from https://nodejs.org and install it.
-
-### 2. Unzip this project and open a terminal in it
-Same as before — unzip the folder, then open a terminal/Command Prompt
-inside the `pure-deshi` folder.
-
-### 3. Install dependencies
-```
-npm install
-```
-
-### 4. Check your `.env.local`
-If you've been following along, you should already have one with your
-MongoDB Atlas connection string and the `AUTH_SECRET` / `ADMIN_USERNAME` /
-`ADMIN_PASSWORD` from Phase 2. Nothing new is required for Phase 3 — the
-same Cloudinary credentials from Phase 1 now actually get used for real
-image uploads.
-
-### 5. Make sure your database is seeded
-If you haven't already:
+### 1. Re-run the seed script
+Even if you seeded before, run this again — it's always safe to re-run, and
+this time it'll backfill the new category taglines and the trending flag on
+Sundarban Honey:
 ```
 npm run seed
 ```
 
-### 6. Start the project
+### 2. Start the project
 ```
 npm run dev
 ```
 
-### 7. Try the real admin panel
-Go to **http://localhost:3000** and click **"অ্যাডমিন প্যানেলে যান"**, or go
-directly to `http://localhost:3000/admin/login`.
+### 3. Open the real homepage
+Go to **http://localhost:3000**. You should see the full site: hero with
+Sundarban Honey in the spotlight, trust strip, category tiles, then a
+section for each category with real products, the story section, the
+breakfast combo banner, testimonials, and footer.
 
-Log in with your `ADMIN_USERNAME` / `ADMIN_PASSWORD`. You should land on the
-**Dashboard** with your real product count.
+### 4. Things specifically worth clicking
+- **বাং / EN pill** (top right) — toggles every piece of text on the page
+- **Sun/moon icon** — toggles dark mode across the whole site
+- **Click a product's name or photo** — opens its detail page with the
+  content you wrote in the admin panel
+- **Click any "Order Now" / "অর্ডার করুন" button** — should open WhatsApp
+  (or a new tab) with a pre-filled message containing the real product name
+  and price. Try it in both languages — the product name in the message
+  should switch, matching whichever language was active when you clicked.
+- **Scroll down slowly** — sections should fade/slide in as they enter view
+- **The floating green WhatsApp button** (bottom-right) — should pulse gently
+  and open a blank WhatsApp chat with your number
+- Go to **`/admin/products`**, turn on "হিরো স্পটলাইটে দেখান" for a
+  *different* product, save, then refresh the homepage — the hero spotlight
+  card should now show that product instead
 
-**Things worth specifically testing:**
-- **Products** — click "নতুন প্রোডাক্ট", fill in a name, price, upload a real
-  photo from your computer, and watch the live preview card on the right
-  update as you type. Save it, then find it in the table. Click the star
-  icon to feature it. Edit it. Delete it.
-- **Categories** — add a new one, check the icon name field links to
-  tabler.io/icons for browsing icon names.
-- **Combos** — create a combo from 2–3 existing products with a discounted
-  bundle price.
-- **Banners** — upload an image, reorder it with the up/down arrows.
-- **Settings** — change the WhatsApp number, save, refresh the page, confirm
-  it stuck.
-- **Log out**, then try visiting `http://localhost:3000/admin/products`
-  directly — you should be bounced straight to the login page (this proves
-  no one can reach the admin panel without logging in first).
+### 5. Confirm clicks are actually being tracked
+Click "Order Now" on a couple of products, then go to **`/admin`**
+(Dashboard) — "এই মাসে অর্ডার ক্লিক" and "সবচেয়ে জনপ্রিয়" should now show real
+numbers instead of zero/"no data yet".
 
-If all of that works, **Phase 3 works correctly.** ✅
+If all of that works, **Phase 4 works correctly.** ✅
 
 ---
 
-## Project structure (for reference)
+## What I couldn't test from my side, and why
+
+My sandbox can only reach a short allow-list of domains (npm, GitHub,
+Ubuntu's package servers) — it can't reach MongoDB Atlas, Cloudinary, or
+Google Fonts. So I couldn't watch the real homepage render against your
+actual seeded data the way you will. To compensate, I built a temporary
+version of the homepage and product page with realistic fake data standing
+in for the database, ran it, and confirmed every section (hero, badges,
+sale pricing, out-of-stock state, combo, product detail content, Bengali
+numeral prices) rendered correctly with zero errors — then removed that
+test version before packaging this ZIP. The real, database-driven version
+is what's in your hands now; the test checklist above is how you confirm it
+end-to-end with your real data.
+
+---
+
+## Project structure (what's new)
 
 ```
 pure-deshi/
 ├── app/
-│   ├── page.js                       ← placeholder homepage
-│   ├── admin/
-│   │   ├── login/page.js             ← public login screen
-│   │   └── (dashboard)/              ← everything below requires login
-│   │       ├── layout.js             ← the auth check + sidebar shell
-│   │       ├── page.js               ← Dashboard
-│   │       ├── products/page.js
-│   │       ├── categories/page.js
-│   │       ├── combos/page.js
-│   │       ├── banners/page.js
-│   │       └── settings/page.js
+│   ├── page.js                    ← real homepage (Server Component, fetches from MongoDB)
+│   ├── error.js, not-found.js     ← friendly error/404 pages for the public site
+│   ├── products/[slug]/page.js    ← product detail page
 │   └── api/
-│       ├── upload/route.js           ← Cloudinary image upload (new)
-│       ├── admin/stats/route.js      ← Dashboard KPI numbers (new)
-│       └── ... (products/categories/combos/banners/settings/auth from Phase 2)
-├── components/
-│   ├── SetupStatus.js                ← Phase 1 connection check (still on homepage)
-│   └── admin/
-│       ├── AdminShell.js             ← sidebar + topbar
-│       └── ProductForm.js            ← the add/edit form + live preview
-├── lib/
-│   ├── mongodb.js, cloudinary.js, auth.js   ← from Phase 1/2
-│   ├── bn.js                         ← Bengali-numeral + badge-label helpers (new)
-│   ├── slugify.js                    ← auto-generates slugs from English names (new)
-│   └── errors.js                     ← friendly duplicate-name error messages (new)
-├── models/                            ← from Phase 2
-├── scripts/seed.mjs                   ← from Phase 2
-└── .env.example
+│       └── track-click/route.js   ← logs WhatsApp button clicks for the Dashboard
+├── components/site/                ← all public-site UI (Header, Hero, ProductCard, etc.)
+│   ├── SiteProviders.js           ← language + dark mode context
+│   ├── Reveal.js                  ← scroll-fade-in wrapper
+│   └── OrderButton.js             ← shared WhatsApp order button
+└── lib/whatsapp.js                ← builds the wa.me link from Settings + product data
 ```
 
 ---
 
-## What's next (Phase 4)
+## What's next (Phase 5)
 
-Phase 4 builds the **real public-facing homepage and product pages** —
-everything a customer sees: hero banners, category browsing, product cards,
-the WhatsApp order button (which is what will finally start filling in the
-Dashboard's "order clicks" number), and the bn/en language toggle.
-
-Just send the next message whenever you're ready, and let me know if any
-step above didn't work as described.
+Phase 5 is content, not code: real product photos uploaded through the
+admin panel (replacing the icon placeholders), real Bangla/English copy for
+every product's detail page, real testimonials swapped in from the Facebook
+page, and the real WhatsApp number in Settings. Let me know when you're
+ready, or if anything in the test checklist above didn't work as described.
