@@ -8,6 +8,11 @@ const CategorySchema = new mongoose.Schema(
     slug: { type: String, required: true, unique: true },
     icon: { type: String, default: "ti-category" }, // Tabler icon name
     sortOrder: { type: Number, default: 0 },
+    // Short descriptive line shown above the category name on the public
+    // homepage (e.g. "Kitchen essentials" above "Ghee & Oil"). Optional —
+    // falls back to the category name itself if left blank.
+    taglineBn: { type: String, default: "" },
+    taglineEn: { type: String, default: "" },
   },
   { timestamps: true }
 );

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { slugify } from "@/lib/slugify";
 import { toBnDigits } from "@/lib/bn";
 
-const emptyForm = { nameBn: "", nameEn: "", icon: "ti-category" };
+const emptyForm = { nameBn: "", nameEn: "", icon: "ti-category", taglineBn: "", taglineEn: "" };
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
@@ -62,7 +62,13 @@ export default function CategoriesPage() {
 
   function openEdit(category) {
     setEditing(category);
-    setForm({ nameBn: category.nameBn, nameEn: category.nameEn, icon: category.icon });
+    setForm({
+      nameBn: category.nameBn,
+      nameEn: category.nameEn,
+      icon: category.icon,
+      taglineBn: category.taglineBn || "",
+      taglineEn: category.taglineEn || "",
+    });
     setFormError("");
     setFormOpen(true);
   }
@@ -233,6 +239,34 @@ export default function CategoriesPage() {
               দেখুন — যেমনঃ ti-droplet, ti-flask, ti-package
             </p>
           </div>
+          <div className="grid grid-cols-2 gap-3.5 mb-4">
+            <div>
+              <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+                ট্যাগলাইন — বাংলা (ঐচ্ছিক)
+              </label>
+              <input
+                value={form.taglineBn}
+                onChange={(e) => setForm((f) => ({ ...f, taglineBn: e.target.value }))}
+                placeholder="যেমনঃ রান্নার মূল উপকরণ"
+                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+              />
+            </div>
+            <div>
+              <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+                Tagline — English (optional)
+              </label>
+              <input
+                value={form.taglineEn}
+                onChange={(e) => setForm((f) => ({ ...f, taglineEn: e.target.value }))}
+                placeholder="e.g. Kitchen essentials"
+                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+              />
+            </div>
+          </div>
+          <p className="text-[11.5px] text-[var(--admin-gray-500)] -mt-2.5 mb-3.5">
+            হোমপেজে ক্যাটাগরির নামের উপরে ছোট একটি লাইন হিসেবে দেখাবে। খালি রাখলে ক্যাটাগরির নামই
+            দেখাবে।
+          </p>
 
           {formError && (
             <p className="text-sm text-[var(--brand-coral-600)] bg-[var(--brand-coral-50)] rounded-lg px-3 py-2 mb-3">

@@ -20,6 +20,7 @@ function emptyFormState(categories) {
     priceCurrent: "",
     inStock: true,
     isFeatured: false,
+    isTrending: false,
     imageUrl: "",
     introText: "",
     benefitsText: "",
@@ -39,6 +40,7 @@ function formStateFromProduct(product) {
     priceCurrent: product.priceCurrent ?? "",
     inStock: product.inStock ?? true,
     isFeatured: product.isFeatured ?? false,
+    isTrending: product.isTrending ?? false,
     imageUrl: product.images?.[0] || "",
     introText: product.content?.intro || "",
     benefitsText: (product.content?.benefits || []).join("\n"),
@@ -108,6 +110,7 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
         priceCurrent: Number(form.priceCurrent),
         inStock: form.inStock,
         isFeatured: form.isFeatured,
+        isTrending: form.isTrending,
         images: form.imageUrl ? [form.imageUrl] : [],
         content: {
           intro: form.introText,
@@ -238,6 +241,16 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
             checked={form.isFeatured}
             onChange={(v) => update("isFeatured", v)}
           />
+          <ToggleRow
+            label="হিরো স্পটলাইটে দেখান (ট্রেন্ডিং)"
+            checked={form.isTrending}
+            onChange={(v) => update("isTrending", v)}
+          />
+          <p className="text-[11.5px] text-[var(--admin-gray-500)] -mt-1.5 mb-3.5">
+            হোমপেজের সবচেয়ে উপরে, হিরো সেকশনে একটি প্রোডাক্ট হাইলাইট হয়ে দেখানো হয় — এটি অন
+            করলে এই প্রোডাক্টটি সেখানে দেখাবে। একসাথে একাধিক প্রোডাক্টে অন থাকলে সবচেয়ে নতুনটি
+            দেখাবে।
+          </p>
 
           <SectionTitle>প্রোডাক্ট পেজের কন্টেন্ট (নাচুরো স্টাইল)</SectionTitle>
           <Field label="সংক্ষিপ্ত পরিচিতি">

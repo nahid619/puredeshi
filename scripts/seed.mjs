@@ -38,10 +38,10 @@ if (!ADMIN_USERNAME || !ADMIN_PASSWORD) {
 
 // ── Categories (exact icon names + slugs used by the homepage mockup) ──────
 const categories = [
-  { nameBn: "মধু", nameEn: "Honey", slug: "honey", icon: "ti-droplet", sortOrder: 1 },
-  { nameBn: "ঘি ও তেল", nameEn: "Ghee & Oil", slug: "ghee-oil", icon: "ti-flask", sortOrder: 2 },
-  { nameBn: "চাল", nameEn: "Rice", slug: "rice", icon: "ti-package", sortOrder: 3 },
-  { nameBn: "সিজনাল ফল", nameEn: "Seasonal Fruit", slug: "seasonal", icon: "ti-calendar", sortOrder: 4 },
+  { nameBn: "মধু", nameEn: "Honey", slug: "honey", icon: "ti-droplet", sortOrder: 1, taglineBn: "আমাদের সিগনেচার", taglineEn: "Our signature" },
+  { nameBn: "ঘি ও তেল", nameEn: "Ghee & Oil", slug: "ghee-oil", icon: "ti-flask", sortOrder: 2, taglineBn: "রান্নার মূল উপকরণ", taglineEn: "Kitchen essentials" },
+  { nameBn: "চাল", nameEn: "Rice", slug: "rice", icon: "ti-package", sortOrder: 3, taglineBn: "ভাতের জন্য", taglineEn: "For your rice" },
+  { nameBn: "সিজনাল ফল", nameEn: "Seasonal Fruit", slug: "seasonal", icon: "ti-calendar", sortOrder: 4, taglineBn: "সিজনাল", taglineEn: "Seasonal" },
 ];
 
 async function upsertCategory(data) {

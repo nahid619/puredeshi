@@ -1,45 +1,79 @@
-import Link from "next/link";
-import Image from "next/image";
-import SetupStatus from "@/components/SetupStatus";
+// app/page.js
+//
+// The real public homepage (Section 5 of spec) — replaces the Phase 1-3
+// placeholder. Everything here is fetched live from MongoDB rather than
+// hardcoded, per Phase 4's checklist. This file is a Server Component so
+// the data fetch happens at request time on the server; the interactive
+// bits (language/theme toggle, scroll reveals, WhatsApp buttons) live in
+// the client components it renders.
 
-export default function Home() {
+import { connectToDatabase } from "@/lib/mongodb";
+import Category from "@/models/Category";
+import Product from "@/models/Product";
+import Combo from "@/models/Combo";
+import Settings from "@/models/Settings";
+import HomeClient from "@/components/site/HomeClient";
+
+// Always fetch fresh data — this is a small catalog, not a high-traffic
+// store, and admins expect their edits to show up immediately.
+export const dynamic = "force-dynamic";
+
+async function getSettings() {
+  let settings = await Settings.findOne();
+  if (!settings) {
+    settings = await Settings.create({});
+  }
+  return settings;
+}
+
+export default async function HomePage() {
+  await connectToDatabase();
+
+  const [categoriesRaw, productsRaw, combosRaw, settingsRaw] = await Promise.all([
+    Category.find().sort({ sortOrder: 1 }),
+    Product.find().populate("category"),
+    Combo.find({ isActive: true }).populate("productIds"),
+    getSettings(),
+  ]);
+
+  // Plain-JSON-serialize everything before handing it to a Client Component
+  // (Mongoose documents aren't serializable as React props as-is).
+  const categories = JSON.parse(JSON.stringify(categoriesRaw));
+  const products = JSON.parse(JSON.stringify(productsRaw));
+  const combos = JSON.parse(JSON.stringify(combosRaw));
+  const settings = JSON.parse(JSON.stringify(settingsRaw));
+
+  // isTrending specifically drives the hero spotlight card; isFeatured is a
+  // separate, lighter-touch flag that just sorts a product first within its
+  // own category grid (see productsByCategory below). If no admin has set
+  // isTrending yet, fall back to isFeatured, then to the first in-stock item.
+  const featuredProduct =
+    products.find((p) => p.isTrending && p.inStock) ||
+    products.find((p) => p.isFeatured && p.inStock) ||
+    products.find((p) => p.inStock) ||
+    null;
+
+  const activeCombo = combos[0] || null;
+
+  const productsByCategory = {};
+  for (const p of products) {
+    const catId = p.category?._id;
+    if (!catId) continue;
+    if (!productsByCategory[catId]) productsByCategory[catId] = [];
+    productsByCategory[catId].push(p);
+  }
+  // Featured products surface first within their own category grid.
+  for (const catId in productsByCategory) {
+    productsByCategory[catId].sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+  }
+
   return (
-    <main className="flex-1 flex flex-col items-center justify-center gap-6 px-6 py-16 text-center bg-[var(--brand-amber-50)]">
-      <Image
-        src="/images/logo-emblem.png"
-        alt="Pure Deshi logo"
-        width={140}
-        height={140}
-        priority
-      />
-
-      <div>
-        <h1 className="text-3xl md:text-4xl font-bold text-[var(--brand-green-900)]">
-          PURE DESHi
-        </h1>
-        <p className="mt-1 text-lg text-[var(--brand-green-700)]">
-          পিওর দেশি — বিশুদ্ধতার পরিচয়
-        </p>
-      </div>
-
-      <span className="inline-block rounded-full bg-[var(--brand-green-800)] text-[var(--brand-amber-50)] text-xs font-semibold px-4 py-1.5 tracking-wide">
-        PHASE 3 — ADMIN PANEL
-      </span>
-
-      <p className="max-w-md text-sm opacity-80">
-        This is still a placeholder page, not the real homepage (that&apos;s
-        Phase 4). The real, working admin panel is now live — log in below to
-        manage products, categories, combos, banners, and settings.
-      </p>
-
-      <Link
-        href="/admin/login"
-        className="inline-flex items-center gap-2 rounded-lg bg-gradient-to-br from-[var(--brand-amber-200)] to-[var(--brand-amber-400)] text-[var(--brand-amber-900)] text-sm font-semibold px-5 py-2.5"
-      >
-        অ্যাডমিন প্যানেলে যান →
-      </Link>
-
-      <SetupStatus />
-    </main>
+    <HomeClient
+      categories={categories}
+      productsByCategory={productsByCategory}
+      featuredProduct={featuredProduct}
+      activeCombo={activeCombo}
+      settings={settings}
+    />
   );
 }
