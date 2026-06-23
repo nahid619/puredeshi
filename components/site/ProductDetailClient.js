@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { SiteProviders, useT } from "./SiteProviders";
+import { SiteProviders, useSite, useT } from "./SiteProviders";
 import Header from "./Header";
 import Footer from "./Footer";
 import FloatingWhatsApp from "./FloatingWhatsApp";
@@ -10,6 +10,16 @@ import { Reveal } from "./Reveal";
 import { formatTaka, BADGE_LABELS } from "@/lib/bn";
 
 const BADGE_LABELS_EN = { none: "", new: "New", bestseller: "Bestseller", preorder: "Pre-order" };
+
+// Picks the English version of a content field, falling back to Bangla if
+// the admin hasn't filled in an English translation yet for that product —
+// better to show something than an empty section.
+function pick(lang, bn, en) {
+  if (lang === "en" && en && (Array.isArray(en) ? en.length > 0 : en.trim())) {
+    return en;
+  }
+  return bn;
+}
 
 function DetailList({ title, items, icon }) {
   if (!items || items.length === 0) return null;
@@ -31,9 +41,15 @@ function DetailList({ title, items, icon }) {
 }
 
 function ProductDetailBody({ product, settings }) {
+  const { lang } = useSite();
   const t = useT();
   const isSale = product.priceRegular && product.priceRegular > product.priceCurrent;
   const content = product.content || {};
+  const intro = pick(lang, content.intro, content.introEn);
+  const benefits = pick(lang, content.benefits, content.benefitsEn);
+  const ingredients = pick(lang, content.ingredients, content.ingredientsEn);
+  const usage = pick(lang, content.usage, content.usageEn);
+  const whyUs = pick(lang, content.whyUs, content.whyUsEn);
 
   return (
     <main className="site-section">
@@ -90,9 +106,9 @@ function ProductDetailBody({ product, settings }) {
               </span>
             </div>
 
-            {content.intro && (
+            {intro && (
               <p style={{ color: "var(--muted)", fontSize: 15, lineHeight: 1.85, marginBottom: 22 }}>
-                {content.intro}
+                {intro}
               </p>
             )}
 
@@ -108,10 +124,10 @@ function ProductDetailBody({ product, settings }) {
             />
 
             <div style={{ marginTop: 32 }}>
-              <DetailList title={t("উপকারিতা", "Benefits")} items={content.benefits} icon="ti-circle-check" />
-              <DetailList title={t("উপাদান / উৎস", "Ingredients / Source")} items={content.ingredients} icon="ti-leaf" />
-              <DetailList title={t("ব্যবহার বিধি", "How to use")} items={content.usage} icon="ti-info-circle" />
-              <DetailList title={t("কেন পিওর দেশি", "Why Pure Deshi")} items={content.whyUs} icon="ti-shield-check" />
+              <DetailList title={t("উপকারিতা", "Benefits")} items={benefits} icon="ti-circle-check" />
+              <DetailList title={t("উপাদান / উৎস", "Ingredients / Source")} items={ingredients} icon="ti-leaf" />
+              <DetailList title={t("ব্যবহার বিধি", "How to use")} items={usage} icon="ti-info-circle" />
+              <DetailList title={t("কেন পিওর দেশি", "Why Pure Deshi")} items={whyUs} icon="ti-shield-check" />
             </div>
           </div>
         </Reveal>

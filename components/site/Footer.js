@@ -63,6 +63,15 @@ export default function Footer({ categories, settings, hasActiveCombo }) {
             <div className="colhead">{t("সহায়তা", "Support")}</div>
             <ul>
               <li>
+                <Link href="/delivery-info">{t("ডেলিভারি তথ্য", "Delivery Info")}</Link>
+              </li>
+              <li>
+                <Link href="/return-policy">{t("রিটার্ন পলিসি", "Return Policy")}</Link>
+              </li>
+              <li>
+                <Link href="/faq">{t("সচরাচর জিজ্ঞাসা", "FAQ")}</Link>
+              </li>
+              <li>
                 <a href={`https://wa.me/${String(settings.whatsappNumber).replace(/[^0-9]/g, "")}`} target="_blank" rel="noreferrer">
                   {t("যোগাযোগ", "Contact")}
                 </a>

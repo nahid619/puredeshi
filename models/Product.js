@@ -25,10 +25,15 @@ const ProductSchema = new mongoose.Schema(
     sortOrder: { type: Number, default: 0 },
     content: {
       intro: { type: String, default: "" },
+      introEn: { type: String, default: "" },
       benefits: { type: [String], default: [] },
+      benefitsEn: { type: [String], default: [] },
       ingredients: { type: [String], default: [] },
+      ingredientsEn: { type: [String], default: [] },
       usage: { type: [String], default: [] },
+      usageEn: { type: [String], default: [] },
       whyUs: { type: [String], default: [] },
+      whyUsEn: { type: [String], default: [] },
     },
   },
   { timestamps: true }

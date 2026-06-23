@@ -23,10 +23,15 @@ function emptyFormState(categories) {
     isTrending: false,
     imageUrl: "",
     introText: "",
+    introTextEn: "",
     benefitsText: "",
+    benefitsTextEn: "",
     ingredientsText: "",
+    ingredientsTextEn: "",
     usageText: "",
+    usageTextEn: "",
     whyUsText: "",
+    whyUsTextEn: "",
   };
 }
 
@@ -43,10 +48,15 @@ function formStateFromProduct(product) {
     isTrending: product.isTrending ?? false,
     imageUrl: product.images?.[0] || "",
     introText: product.content?.intro || "",
+    introTextEn: product.content?.introEn || "",
     benefitsText: (product.content?.benefits || []).join("\n"),
+    benefitsTextEn: (product.content?.benefitsEn || []).join("\n"),
     ingredientsText: (product.content?.ingredients || []).join("\n"),
+    ingredientsTextEn: (product.content?.ingredientsEn || []).join("\n"),
     usageText: (product.content?.usage || []).join("\n"),
+    usageTextEn: (product.content?.usageEn || []).join("\n"),
     whyUsText: (product.content?.whyUs || []).join("\n"),
+    whyUsTextEn: (product.content?.whyUsEn || []).join("\n"),
   };
 }
 
@@ -114,10 +124,15 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
         images: form.imageUrl ? [form.imageUrl] : [],
         content: {
           intro: form.introText,
+          introEn: form.introTextEn,
           benefits: splitLines(form.benefitsText),
+          benefitsEn: splitLines(form.benefitsTextEn),
           ingredients: splitLines(form.ingredientsText),
+          ingredientsEn: splitLines(form.ingredientsTextEn),
           usage: splitLines(form.usageText),
+          usageEn: splitLines(form.usageTextEn),
           whyUs: splitLines(form.whyUsText),
+          whyUsEn: splitLines(form.whyUsTextEn),
         },
       });
     } catch (err) {
@@ -253,46 +268,100 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
           </p>
 
           <SectionTitle>প্রোডাক্ট পেজের কন্টেন্ট (নাচুরো স্টাইল)</SectionTitle>
-          <Field label="সংক্ষিপ্ত পরিচিতি">
-            <textarea
-              rows={2}
-              value={form.introText}
-              onChange={(e) => update("introText", e.target.value)}
-              placeholder="এক বা দুই লাইনে প্রোডাক্টের পরিচিতি লিখুন"
-            />
-          </Field>
-          <Field label="উপকারিতা (প্রতি লাইনে একটি)">
-            <textarea
-              rows={3}
-              value={form.benefitsText}
-              onChange={(e) => update("benefitsText", e.target.value)}
-              placeholder={"হজমে সহায়ক\nশরীরে শক্তি বাড়ায়\nত্বক ও চুলের জন্য ভালো"}
-            />
-          </Field>
-          <Field label="উপাদান / উৎস (প্রতি লাইনে একটি)">
-            <textarea
-              rows={2}
-              value={form.ingredientsText}
-              onChange={(e) => update("ingredientsText", e.target.value)}
-              placeholder={"১০০% খাঁটি গরুর দুধ\nপাবনার স্থানীয় খামার"}
-            />
-          </Field>
-          <Field label="ব্যবহার বিধি (প্রতি লাইনে একটি)">
-            <textarea
-              rows={2}
-              value={form.usageText}
-              onChange={(e) => update("usageText", e.target.value)}
-              placeholder={"ভাত, রুটি বা পরোটার সাথে ব্যবহার করুন\nফ্রিজে সংরক্ষণ করা ভালো"}
-            />
-          </Field>
-          <Field label="কেন পিওর দেশি (প্রতি লাইনে একটি)">
-            <textarea
-              rows={2}
-              value={form.whyUsText}
-              onChange={(e) => update("whyUsText", e.target.value)}
-              placeholder={"কোনো ভেজাল বা প্রিজারভেটিভ নেই\nসরাসরি খামার থেকে সংগ্রহ"}
-            />
-          </Field>
+          <p className="text-[11.5px] text-[var(--admin-gray-500)] -mt-1.5 mb-3">
+            প্রতিটি অংশের বাংলা ও English দুটোই পূরণ করুন — ভাষা টগল করলে কাস্টমার এই দুটোর মধ্যে
+            সুইচ করবে। English ফাঁকা রাখলে সেই অংশ English ভিউতে দেখাবে না।
+          </p>
+          <Row2>
+            <Field label="সংক্ষিপ্ত পরিচিতি — বাংলা">
+              <textarea
+                rows={2}
+                value={form.introText}
+                onChange={(e) => update("introText", e.target.value)}
+                placeholder="এক বা দুই লাইনে প্রোডাক্টের পরিচিতি লিখুন"
+              />
+            </Field>
+            <Field label="Short intro — English">
+              <textarea
+                rows={2}
+                value={form.introTextEn}
+                onChange={(e) => update("introTextEn", e.target.value)}
+                placeholder="One or two lines introducing the product"
+              />
+            </Field>
+          </Row2>
+          <Row2>
+            <Field label="উপকারিতা — বাংলা (প্রতি লাইনে একটি)">
+              <textarea
+                rows={3}
+                value={form.benefitsText}
+                onChange={(e) => update("benefitsText", e.target.value)}
+                placeholder={"হজমে সহায়ক\nশরীরে শক্তি বাড়ায়"}
+              />
+            </Field>
+            <Field label="Benefits — English (one per line)">
+              <textarea
+                rows={3}
+                value={form.benefitsTextEn}
+                onChange={(e) => update("benefitsTextEn", e.target.value)}
+                placeholder={"Supports digestion\nBoosts energy"}
+              />
+            </Field>
+          </Row2>
+          <Row2>
+            <Field label="উপাদান / উৎস — বাংলা (প্রতি লাইনে একটি)">
+              <textarea
+                rows={2}
+                value={form.ingredientsText}
+                onChange={(e) => update("ingredientsText", e.target.value)}
+                placeholder={"১০০% খাঁটি গরুর দুধ"}
+              />
+            </Field>
+            <Field label="Ingredients / Source — English (one per line)">
+              <textarea
+                rows={2}
+                value={form.ingredientsTextEn}
+                onChange={(e) => update("ingredientsTextEn", e.target.value)}
+                placeholder={"100% pure cow's milk"}
+              />
+            </Field>
+          </Row2>
+          <Row2>
+            <Field label="ব্যবহার বিধি — বাংলা (প্রতি লাইনে একটি)">
+              <textarea
+                rows={2}
+                value={form.usageText}
+                onChange={(e) => update("usageText", e.target.value)}
+                placeholder={"ভাত, রুটি বা পরোটার সাথে ব্যবহার করুন"}
+              />
+            </Field>
+            <Field label="How to use — English (one per line)">
+              <textarea
+                rows={2}
+                value={form.usageTextEn}
+                onChange={(e) => update("usageTextEn", e.target.value)}
+                placeholder={"Use with rice, bread, or paratha"}
+              />
+            </Field>
+          </Row2>
+          <Row2>
+            <Field label="কেন পিওর দেশি — বাংলা (প্রতি লাইনে একটি)">
+              <textarea
+                rows={2}
+                value={form.whyUsText}
+                onChange={(e) => update("whyUsText", e.target.value)}
+                placeholder={"কোনো ভেজাল বা প্রিজারভেটিভ নেই"}
+              />
+            </Field>
+            <Field label="Why Pure Deshi — English (one per line)">
+              <textarea
+                rows={2}
+                value={form.whyUsTextEn}
+                onChange={(e) => update("whyUsTextEn", e.target.value)}
+                placeholder={"No adulteration or preservatives"}
+              />
+            </Field>
+          </Row2>
 
           {error && (
             <p className="text-sm text-[var(--brand-coral-600)] bg-[var(--brand-coral-50)] rounded-lg px-3 py-2 mb-3">
