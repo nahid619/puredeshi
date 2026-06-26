@@ -1,4 +1,6 @@
+// app/layout.js
 import { Baloo_Da_2, Hind_Siliguri } from "next/font/google";
+import "@tabler/icons-webfont/dist/tabler-icons.css";
 import "./globals.css";
 
 // Headings font — Baloo Da 2 (Section 3 of the project spec)
