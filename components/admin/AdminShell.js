@@ -64,9 +64,11 @@ export default function AdminShell({ username, children }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-[var(--admin-gray-50)] text-[var(--admin-gray-900)]">
-      {/* Sidebar */}
-      <aside className="w-60 shrink-0 flex flex-col py-5 bg-[var(--brand-green-900)] text-[var(--brand-green-100)]">
+    <div className="flex h-screen overflow-hidden bg-[var(--admin-gray-50)] text-[var(--admin-gray-900)]">
+      {/* Sidebar — fixed height (h-screen on the parent), never scrolls with
+          the page. Its own overflow-y-auto is just a safety net for if the
+          nav list ever grows taller than the viewport someday. */}
+      <aside className="w-60 shrink-0 flex flex-col py-5 bg-[var(--brand-green-900)] text-[var(--brand-green-100)] overflow-y-auto">
         <div className="flex items-center gap-2.5 px-5 pb-[22px] mb-3.5 border-b border-white/10">
           <Image
             src="/images/logo-emblem.png"
@@ -106,21 +108,36 @@ export default function AdminShell({ username, children }) {
         </div>
       </aside>
 
-      {/* Main */}
-      <div className="flex-1 min-w-0 flex flex-col">
-        <div className="bg-white border-b border-[var(--admin-gray-200)] px-7 py-4 flex justify-between items-center">
+      {/* Main column — also capped to the screen height, but flex-col with
+          overflow-hidden so it never scrolls itself either; only the inner
+          content div below it scrolls. */}
+      <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
+        {/* Top bar — shrink-0 so it stays put and never gets pushed/scrolled */}
+        <div className="bg-white border-b border-[var(--admin-gray-200)] px-7 py-4 flex justify-between items-center shrink-0">
           <h1 className="text-[19px] font-semibold" style={{ fontFamily: "var(--font-heading)" }}>
             {pageTitle}
           </h1>
-          <div className="flex items-center gap-2 text-sm text-[var(--admin-gray-700)]">
-            <div className="w-8 h-8 rounded-full bg-[var(--brand-amber-200)] flex items-center justify-center font-semibold text-xs text-[var(--brand-amber-900)]">
-              {initials}
+          <div className="flex items-center gap-4">
+            <a
+              href="/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-[var(--admin-gray-200)] text-[var(--admin-gray-700)] hover:bg-[var(--admin-gray-50)] transition-colors"
+            >
+              <i className="ti ti-external-link" />
+              সাইট দেখুন
+            </a>
+            <div className="flex items-center gap-2 text-sm text-[var(--admin-gray-700)]">
+              <div className="w-8 h-8 rounded-full bg-[var(--brand-amber-200)] flex items-center justify-center font-semibold text-xs text-[var(--brand-amber-900)]">
+                {initials}
+              </div>
+              {username}
             </div>
-            {username}
           </div>
         </div>
 
-        <div className="p-6 md:p-7">{children}</div>
+        {/* The ONLY scrollable region in the whole shell */}
+        <div className="flex-1 overflow-y-auto p-6 md:p-7">{children}</div>
       </div>
     </div>
   );

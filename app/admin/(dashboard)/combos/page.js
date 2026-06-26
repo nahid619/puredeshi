@@ -1,7 +1,7 @@
 // app/admin/(dashboard)/combos/page.js
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { formatTaka } from "@/lib/bn";
 
 function emptyForm() {
@@ -14,6 +14,158 @@ function emptyForm() {
     image: "",
     isActive: true,
   };
+}
+
+// Extracted so the exact same form markup can render in two different
+// places: above the table for "add new", or inline directly under the row
+// being edited — instead of always appearing once at the very bottom of
+// the page, far from whatever you actually clicked.
+function ComboForm({
+  form,
+  setForm,
+  products,
+  uploading,
+  saving,
+  formError,
+  onImageChange,
+  onToggleProduct,
+  onSubmit,
+  onCancel,
+}) {
+  return (
+    <form
+      onSubmit={onSubmit}
+      className="border-t border-[var(--admin-gray-100)] p-6 bg-[var(--admin-gray-50)] max-w-lg"
+    >
+      <div className="grid grid-cols-2 gap-3.5 mb-4">
+        <div>
+          <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+            নাম (বাংলা)
+          </label>
+          <input
+            value={form.nameBn}
+            onChange={(e) => setForm((f) => ({ ...f, nameBn: e.target.value }))}
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+          />
+        </div>
+        <div>
+          <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+            নাম (English)
+          </label>
+          <input
+            value={form.nameEn}
+            onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+          />
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+          প্রোডাক্ট বেছে নিন
+        </label>
+        <div className="bg-white border border-[var(--admin-gray-200)] rounded-lg p-3 max-h-44 overflow-y-auto flex flex-col gap-1.5">
+          {products.map((p) => (
+            <label key={p._id} className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={form.productIds.includes(p._id)}
+                onChange={() => onToggleProduct(p._id)}
+              />
+              {p.nameBn}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3.5 mb-4">
+        <div>
+          <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+            পুরোনো দাম (যোগফল, না থাকলে খালি)
+          </label>
+          <input
+            type="number"
+            value={form.priceRegular}
+            onChange={(e) => setForm((f) => ({ ...f, priceRegular: e.target.value }))}
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+          />
+        </div>
+        <div>
+          <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+            কম্বো দাম
+          </label>
+          <input
+            type="number"
+            value={form.priceCombo}
+            onChange={(e) => setForm((f) => ({ ...f, priceCombo: e.target.value }))}
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+          />
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+          ছবি
+        </label>
+        <div
+          onClick={() => document.getElementById("combo-image").click()}
+          className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4 text-center bg-white cursor-pointer"
+        >
+          {form.image ? (
+            // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
+            <img src={form.image} alt="" className="w-16 h-16 object-cover rounded-lg mx-auto mb-2" />
+          ) : (
+            <i className="ti ti-cloud-upload text-[26px] text-[var(--admin-gray-400)]" />
+          )}
+          <div className="text-[12.5px] text-[var(--admin-gray-500)] mt-1.5">
+            {uploading ? "আপলোড হচ্ছে…" : "ছবি আপলোড করতে ক্লিক করুন"}
+          </div>
+        </div>
+        <input
+          id="combo-image"
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={onImageChange}
+        />
+      </div>
+
+      <div className="flex justify-between items-center bg-white border border-[var(--admin-gray-200)] rounded-lg px-3.5 py-2.5 mb-4">
+        <span className="text-sm">অ্যাক্টিভ</span>
+        <div
+          role="switch"
+          aria-checked={form.isActive}
+          tabIndex={0}
+          onClick={() => setForm((f) => ({ ...f, isActive: !f.isActive }))}
+          className={`admin-switch ${form.isActive ? "on" : ""}`}
+        />
+      </div>
+
+      {formError && (
+        <p className="text-sm text-[var(--brand-coral-600)] bg-[var(--brand-coral-50)] rounded-lg px-3 py-2 mb-3">
+          {formError}
+        </p>
+      )}
+
+      <div className="flex gap-2.5">
+        <button
+          type="submit"
+          disabled={saving || uploading}
+          className="inline-flex items-center gap-1.5 px-[18px] py-2.5 rounded-[9px] font-semibold text-[13.5px] bg-gradient-to-br from-[var(--brand-amber-200)] to-[var(--brand-amber-400)] text-[var(--brand-amber-900)] disabled:opacity-60"
+        >
+          <i className="ti ti-check" />
+          {saving ? "সেভ হচ্ছে…" : "সেভ করুন"}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="px-[18px] py-2.5 rounded-[9px] font-semibold text-[13.5px] bg-[var(--admin-gray-100)] text-[var(--admin-gray-700)] hover:bg-[var(--admin-gray-200)]"
+        >
+          বাতিল
+        </button>
+      </div>
+    </form>
+  );
 }
 
 export default function CombosPage() {
@@ -175,6 +327,23 @@ export default function CombosPage() {
       {error && <p className="text-sm text-[var(--brand-coral-600)] px-5 py-3">{error}</p>}
       {loading && <p className="text-sm text-[var(--admin-gray-500)] px-5 py-6">লোড হচ্ছে…</p>}
 
+      {/* "Add new" has no specific row to anchor to, so it opens right
+          here, immediately visible without scrolling. */}
+      {formOpen && !editing && (
+        <ComboForm
+          form={form}
+          setForm={setForm}
+          products={products}
+          uploading={uploading}
+          saving={saving}
+          formError={formError}
+          onImageChange={handleImageChange}
+          onToggleProduct={toggleProduct}
+          onSubmit={handleSubmit}
+          onCancel={closeForm}
+        />
+      )}
+
       {!loading && !error && (
         <table className="w-full border-collapse">
           <thead>
@@ -192,56 +361,79 @@ export default function CombosPage() {
           <tbody>
             {combos.map((c) => {
               const isSale = c.priceRegular && c.priceRegular > c.priceCombo;
+              const isEditingThis = formOpen && editing?._id === c._id;
               return (
-                <tr key={c._id}>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
-                    <div className="w-[42px] h-[42px] rounded-lg bg-gradient-to-br from-[var(--brand-amber-50)] to-[#fff5e4] flex items-center justify-center overflow-hidden">
-                      {c.image ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
-                        <img src={c.image} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <i className="ti ti-package text-[var(--brand-amber-600,#854F0B)]" />
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] font-semibold text-[13.5px]">
-                    {c.nameBn}
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13px] text-[var(--admin-gray-700)]">
-                    {c.productIds.map((p) => p.nameBn).join(", ")}
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13.5px]">
-                    {isSale && <span className="price-old">{formatTaka(c.priceRegular)}</span>}
-                    <span className={`price-now ${isSale ? "sale" : "normal"}`}>
-                      {formatTaka(c.priceCombo)}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
-                    <span
-                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
-                        c.isActive
-                          ? "bg-[var(--brand-green-50)] text-[var(--brand-green-800)]"
-                          : "bg-[var(--admin-gray-100)] text-[var(--admin-gray-500)]"
-                      }`}
-                    >
-                      {c.isActive ? "অ্যাক্টিভ" : "নিষ্ক্রিয়"}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] whitespace-nowrap">
-                    <button
-                      onClick={() => openEdit(c)}
-                      className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
-                    >
-                      <i className="ti ti-edit" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(c)}
-                      className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
-                    >
-                      <i className="ti ti-trash" />
-                    </button>
-                  </td>
-                </tr>
+                <Fragment key={c._id}>
+                  <tr>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
+                      <div className="w-[42px] h-[42px] rounded-lg bg-gradient-to-br from-[var(--brand-amber-50)] to-[#fff5e4] flex items-center justify-center overflow-hidden">
+                        {c.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
+                          <img src={c.image} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <i className="ti ti-package text-[var(--brand-amber-600,#854F0B)]" />
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] font-semibold text-[13.5px]">
+                      {c.nameBn}
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13px] text-[var(--admin-gray-700)]">
+                      {c.productIds.map((p) => p.nameBn).join(", ")}
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13.5px]">
+                      {isSale && <span className="price-old">{formatTaka(c.priceRegular)}</span>}
+                      <span className={`price-now ${isSale ? "sale" : "normal"}`}>
+                        {formatTaka(c.priceCombo)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
+                      <span
+                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+                          c.isActive
+                            ? "bg-[var(--brand-green-50)] text-[var(--brand-green-800)]"
+                            : "bg-[var(--admin-gray-100)] text-[var(--admin-gray-500)]"
+                        }`}
+                      >
+                        {c.isActive ? "অ্যাক্টিভ" : "নিষ্ক্রিয়"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] whitespace-nowrap">
+                      <button
+                        onClick={() => (isEditingThis ? closeForm() : openEdit(c))}
+                        className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
+                      >
+                        <i className={`ti ${isEditingThis ? "ti-x" : "ti-edit"}`} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(c)}
+                        className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
+                      >
+                        <i className="ti ti-trash" />
+                      </button>
+                    </td>
+                  </tr>
+                  {/* Edit form opens directly under the row you clicked —
+                      not at the bottom of the whole list. */}
+                  {isEditingThis && (
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <ComboForm
+                          form={form}
+                          setForm={setForm}
+                          products={products}
+                          uploading={uploading}
+                          saving={saving}
+                          formError={formError}
+                          onImageChange={handleImageChange}
+                          onToggleProduct={toggleProduct}
+                          onSubmit={handleSubmit}
+                          onCancel={closeForm}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               );
             })}
             {combos.length === 0 && (
@@ -253,141 +445,6 @@ export default function CombosPage() {
             )}
           </tbody>
         </table>
-      )}
-
-      {formOpen && (
-        <form
-          onSubmit={handleSubmit}
-          className="border-t border-[var(--admin-gray-100)] p-6 bg-[var(--admin-gray-50)] max-w-lg"
-        >
-          <div className="grid grid-cols-2 gap-3.5 mb-4">
-            <div>
-              <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
-                নাম (বাংলা)
-              </label>
-              <input
-                value={form.nameBn}
-                onChange={(e) => setForm((f) => ({ ...f, nameBn: e.target.value }))}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
-                নাম (English)
-              </label>
-              <input
-                value={form.nameEn}
-                onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
-              />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
-              প্রোডাক্ট বেছে নিন
-            </label>
-            <div className="bg-white border border-[var(--admin-gray-200)] rounded-lg p-3 max-h-44 overflow-y-auto flex flex-col gap-1.5">
-              {products.map((p) => (
-                <label key={p._id} className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={form.productIds.includes(p._id)}
-                    onChange={() => toggleProduct(p._id)}
-                  />
-                  {p.nameBn}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3.5 mb-4">
-            <div>
-              <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
-                পুরোনো দাম (যোগফল, না থাকলে খালি)
-              </label>
-              <input
-                type="number"
-                value={form.priceRegular}
-                onChange={(e) => setForm((f) => ({ ...f, priceRegular: e.target.value }))}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
-              />
-            </div>
-            <div>
-              <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
-                কম্বো দাম
-              </label>
-              <input
-                type="number"
-                value={form.priceCombo}
-                onChange={(e) => setForm((f) => ({ ...f, priceCombo: e.target.value }))}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
-              />
-            </div>
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
-              ছবি
-            </label>
-            <div
-              onClick={() => document.getElementById("combo-image").click()}
-              className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4 text-center bg-white cursor-pointer"
-            >
-              {form.image ? (
-                // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
-                <img src={form.image} alt="" className="w-16 h-16 object-cover rounded-lg mx-auto mb-2" />
-              ) : (
-                <i className="ti ti-cloud-upload text-[26px] text-[var(--admin-gray-400)]" />
-              )}
-              <div className="text-[12.5px] text-[var(--admin-gray-500)] mt-1.5">
-                {uploading ? "আপলোড হচ্ছে…" : "ছবি আপলোড করতে ক্লিক করুন"}
-              </div>
-            </div>
-            <input
-              id="combo-image"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageChange}
-            />
-          </div>
-
-          <div className="flex justify-between items-center bg-white border border-[var(--admin-gray-200)] rounded-lg px-3.5 py-2.5 mb-4">
-            <span className="text-sm">অ্যাক্টিভ</span>
-            <div
-              role="switch"
-              aria-checked={form.isActive}
-              tabIndex={0}
-              onClick={() => setForm((f) => ({ ...f, isActive: !f.isActive }))}
-              className={`admin-switch ${form.isActive ? "on" : ""}`}
-            />
-          </div>
-
-          {formError && (
-            <p className="text-sm text-[var(--brand-coral-600)] bg-[var(--brand-coral-50)] rounded-lg px-3 py-2 mb-3">
-              {formError}
-            </p>
-          )}
-
-          <div className="flex gap-2.5">
-            <button
-              type="submit"
-              disabled={saving || uploading}
-              className="inline-flex items-center gap-1.5 px-[18px] py-2.5 rounded-[9px] font-semibold text-[13.5px] bg-gradient-to-br from-[var(--brand-amber-200)] to-[var(--brand-amber-400)] text-[var(--brand-amber-900)] disabled:opacity-60"
-            >
-              <i className="ti ti-check" />
-              {saving ? "সেভ হচ্ছে…" : "সেভ করুন"}
-            </button>
-            <button
-              type="button"
-              onClick={closeForm}
-              className="px-[18px] py-2.5 rounded-[9px] font-semibold text-[13.5px] bg-[var(--admin-gray-100)] text-[var(--admin-gray-700)] hover:bg-[var(--admin-gray-200)]"
-            >
-              বাতিল
-            </button>
-          </div>
-        </form>
       )}
     </div>
   );

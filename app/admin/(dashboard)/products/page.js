@@ -1,6 +1,7 @@
+// app/admin/(dashboard)/products/page.js
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { formatTaka } from "@/lib/bn";
 import { slugify } from "@/lib/slugify";
 import ProductForm from "@/components/admin/ProductForm";
@@ -152,6 +153,18 @@ export default function ProductsPage() {
       {error && <p className="text-sm text-[var(--brand-coral-600)] px-5 py-3">{error}</p>}
       {loading && <p className="text-sm text-[var(--admin-gray-500)] px-5 py-6">লোড হচ্ছে…</p>}
 
+      {/* "Add new" has no specific row to anchor to, so it opens right here,
+          immediately visible without any scrolling. */}
+      {formOpen && !editingProduct && (
+        <ProductForm
+          key="new"
+          product={null}
+          categories={categories}
+          onSave={handleSave}
+          onCancel={closeForm}
+        />
+      )}
+
       {!loading && !error && (
         <table className="w-full border-collapse">
           <thead>
@@ -169,67 +182,85 @@ export default function ProductsPage() {
           <tbody>
             {filtered.map((p) => {
               const isSale = p.priceRegular && p.priceRegular > p.priceCurrent;
+              const isEditingThis = formOpen && editingProduct?._id === p._id;
               return (
-                <tr key={p._id}>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
-                    <div className="w-[42px] h-[42px] rounded-lg bg-gradient-to-br from-[var(--brand-amber-50)] to-[#fff5e4] flex items-center justify-center overflow-hidden">
-                      {p.images?.[0] ? (
-                        // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
-                        <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
-                      ) : (
+                <Fragment key={p._id}>
+                  <tr>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
+                      <div className="w-[42px] h-[42px] rounded-lg bg-gradient-to-br from-[var(--brand-amber-50)] to-[#fff5e4] flex items-center justify-center overflow-hidden">
+                        {p.images?.[0] ? (
+                          // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
+                          <img src={p.images[0]} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <i
+                            className={`ti ${p.category?.icon || "ti-package"} text-[var(--brand-amber-600,#854F0B)]`}
+                          />
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] font-semibold text-[var(--admin-gray-900)] text-[13.5px]">
+                      {p.nameBn}
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13.5px]">
+                      {p.category?.nameBn || "—"}
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13.5px]">
+                      {isSale && <span className="price-old">{formatTaka(p.priceRegular)}</span>}
+                      <span className={`price-now ${isSale ? "sale" : "normal"}`}>
+                        {formatTaka(p.priceCurrent)}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
+                      <span
+                        className={`text-[11px] font-semibold px-2.5 py-1 rounded-full inline-flex items-center gap-1 ${
+                          p.inStock
+                            ? "bg-[var(--brand-green-50)] text-[var(--brand-green-800)]"
+                            : "bg-[var(--admin-gray-100)] text-[var(--admin-gray-500)]"
+                        }`}
+                      >
+                        {p.inStock ? "স্টকে আছে" : "স্টক আউট"}
+                      </span>
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
+                      <button onClick={() => toggleFeatured(p)} title="ফিচার্ড টগল করুন">
                         <i
-                          className={`ti ${p.category?.icon || "ti-package"} text-[var(--brand-amber-600,#854F0B)]`}
+                          className={`ti ${
+                            p.isFeatured ? "ti-star-filled text-[var(--brand-amber-400)]" : "ti-star text-[var(--admin-gray-200)]"
+                          } text-lg`}
                         />
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] font-semibold text-[var(--admin-gray-900)] text-[13.5px]">
-                    {p.nameBn}
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13.5px]">
-                    {p.category?.nameBn || "—"}
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] text-[13.5px]">
-                    {isSale && <span className="price-old">{formatTaka(p.priceRegular)}</span>}
-                    <span className={`price-now ${isSale ? "sale" : "normal"}`}>
-                      {formatTaka(p.priceCurrent)}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
-                    <span
-                      className={`text-[11px] font-semibold px-2.5 py-1 rounded-full inline-flex items-center gap-1 ${
-                        p.inStock
-                          ? "bg-[var(--brand-green-50)] text-[var(--brand-green-800)]"
-                          : "bg-[var(--admin-gray-100)] text-[var(--admin-gray-500)]"
-                      }`}
-                    >
-                      {p.inStock ? "স্টকে আছে" : "স্টক আউট"}
-                    </span>
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)]">
-                    <button onClick={() => toggleFeatured(p)} title="ফিচার্ড টগল করুন">
-                      <i
-                        className={`ti ${
-                          p.isFeatured ? "ti-star-filled text-[var(--brand-amber-400)]" : "ti-star text-[var(--admin-gray-200)]"
-                        } text-lg`}
-                      />
-                    </button>
-                  </td>
-                  <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] whitespace-nowrap">
-                    <button
-                      onClick={() => openEditForm(p)}
-                      className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
-                    >
-                      <i className="ti ti-edit" />
-                    </button>
-                    <button
-                      onClick={() => handleDelete(p)}
-                      className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
-                    >
-                      <i className="ti ti-trash" />
-                    </button>
-                  </td>
-                </tr>
+                      </button>
+                    </td>
+                    <td className="px-5 py-3 border-b border-[var(--admin-gray-100)] whitespace-nowrap">
+                      <button
+                        onClick={() => (isEditingThis ? closeForm() : openEditForm(p))}
+                        className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
+                      >
+                        <i className={`ti ${isEditingThis ? "ti-x" : "ti-edit"}`} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p)}
+                        className="w-8 h-8 rounded-lg inline-flex items-center justify-center text-[var(--admin-gray-500)] hover:bg-[var(--admin-gray-100)]"
+                      >
+                        <i className="ti ti-trash" />
+                      </button>
+                    </td>
+                  </tr>
+                  {/* Edit form opens directly under the row you clicked —
+                      not at the bottom of the whole list. */}
+                  {isEditingThis && (
+                    <tr>
+                      <td colSpan={7} className="p-0">
+                        <ProductForm
+                          key={p._id}
+                          product={editingProduct}
+                          categories={categories}
+                          onSave={handleSave}
+                          onCancel={closeForm}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               );
             })}
             {filtered.length === 0 && (
@@ -241,16 +272,6 @@ export default function ProductsPage() {
             )}
           </tbody>
         </table>
-      )}
-
-      {formOpen && (
-        <ProductForm
-          key={editingProduct?._id || "new"}
-          product={editingProduct}
-          categories={categories}
-          onSave={handleSave}
-          onCancel={closeForm}
-        />
       )}
     </div>
   );
