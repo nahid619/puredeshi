@@ -1,6 +1,6 @@
+// components/site/Header.js
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useSite, useT } from "./SiteProviders";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -52,10 +52,11 @@ export default function Header({ categories, settings, hasActiveCombo }) {
       <header className="site-header">
         <div className="site-wrap">
           <Link className="site-logo" href="/#top">
-            <Image src="/images/logo-emblem.png" alt="Pure Deshi" width={42} height={42} style={{ borderRadius: "50%" }} />
+            {/* eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/local logo URL, not a static asset */}
+            <img src={settings.logoUrl || "/images/logo-emblem.png"} alt="Pure Deshi" width={42} height={42} style={{ borderRadius: "50%" }} />
             <div>
               <div className="name">Pure Deshi</div>
-              <div className="tag">{t("বিশুদ্ধতার পরিচয়", "The mark of purity")}</div>
+              <div className="tag">{t(settings.tagline?.bn, settings.tagline?.en)}</div>
             </div>
           </Link>
           <nav className="site-nav-links">

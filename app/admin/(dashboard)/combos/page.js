@@ -1,3 +1,4 @@
+// app/admin/(dashboard)/combos/page.js
 "use client";
 
 import { useEffect, useState } from "react";
@@ -92,11 +93,13 @@ export default function CombosPage() {
   async function handleImageChange(e) {
     const file = e.target.files[0];
     if (!file) return;
+    const previousUrl = form.image;
     setForm((f) => ({ ...f, image: URL.createObjectURL(file) }));
     setUploading(true);
     try {
       const body = new FormData();
       body.append("file", file);
+      if (previousUrl) body.append("oldUrl", previousUrl);
       const res = await fetch("/api/upload", { method: "POST", body });
       const data = await res.json();
       if (!res.ok) {

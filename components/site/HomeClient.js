@@ -1,3 +1,4 @@
+// components/site/HomeClient.js
 "use client";
 
 import { SiteProviders } from "./SiteProviders";
@@ -18,12 +19,13 @@ export default function HomeClient({
   featuredProduct,
   activeCombo,
   settings,
+  testimonials,
 }) {
   return (
     <SiteProviders>
       <Header categories={categories} settings={settings} hasActiveCombo={!!activeCombo} />
       <Hero featuredProduct={featuredProduct} settings={settings} />
-      <TrustStrip />
+      <TrustStrip settings={settings} />
       <CategoryNav categories={categories} />
 
       {categories.map((category, i) => (
@@ -38,7 +40,7 @@ export default function HomeClient({
 
       <Story settings={settings} />
       <ComboBanner combo={activeCombo} settings={settings} />
-      <Testimonials />
+      <Testimonials testimonials={testimonials} />
       <Footer categories={categories} settings={settings} hasActiveCombo={!!activeCombo} />
       <FloatingWhatsApp settings={settings} />
     </SiteProviders>

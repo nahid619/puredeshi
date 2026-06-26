@@ -1,7 +1,8 @@
 // scripts/seed.mjs
 //
 // Populates the database with the real Pure Deshi catalog: 4 categories,
-// 13 products, 1 combo, default settings, and one admin login.
+// 13 products, 1 combo, 3 example testimonials, default settings, and one
+// admin login.
 //
 // Safe to run more than once — it upserts by slug/username instead of
 // blindly inserting, so re-running this won't create duplicates.
@@ -16,6 +17,7 @@ import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 import Combo from "../models/Combo.js";
 import Settings from "../models/Settings.js";
+import Testimonial from "../models/Testimonial.js";
 import Admin from "../models/Admin.js";
 
 const MONGODB_URI = process.env.MONGODB_URI;
@@ -345,6 +347,45 @@ async function upsertProduct(data) {
   );
 }
 
+// ── Testimonials ────────────────────────────────────────────────────────
+// These are the same example reviews that used to be hardcoded directly in
+// components/site/Testimonials.js. They're seeded here so the homepage
+// isn't empty on first run, but they're now just starting data — replace
+// them with real customer reviews via the admin "গ্রাহক মতামত" page
+// whenever you have them, no code change needed.
+const testimonials = [
+  {
+    avatar: "রবে",
+    nameBn: "রহিমা বেগম",
+    nameEn: "Rahima Begum",
+    roleBn: "গৃহিণী",
+    roleEn: "Homemaker",
+    textBn: "প্রথমবার ঘি অর্ডার করেছিলাম, স্বাদ একদম দাদীর হাতের মতো লাগলো।",
+    textEn: "I ordered the ghee for the first time — it tasted just like my grandmother used to make.",
+    sortOrder: 1,
+  },
+  {
+    avatar: "কহ",
+    nameBn: "কামরুল হাসান",
+    nameEn: "Kamrul Hasan",
+    roleBn: "ব্যবসায়ী",
+    roleEn: "Business owner",
+    textBn: "সরিষার তেলের ঘ্রাণ আর মান অসাধারণ, এখন থেকে এখান থেকেই নিচ্ছি।",
+    textEn: "The mustard oil's smell and quality are amazing — I only buy from here now.",
+    sortOrder: 2,
+  },
+  {
+    avatar: "নআ",
+    nameBn: "নাজনীন আক্তার",
+    nameEn: "Nazneen Akter",
+    roleBn: "শিক্ষিকা",
+    roleEn: "Teacher",
+    textBn: "মধু একদম খাঁটি লেগেছে, পরিবারের সবাই পছন্দ করেছে।",
+    textEn: "The honey felt completely pure — my whole family loved it.",
+    sortOrder: 3,
+  },
+];
+
 async function main() {
   console.log("Connecting to MongoDB...");
   await mongoose.connect(MONGODB_URI);
@@ -388,6 +429,20 @@ async function main() {
     { upsert: true, new: true, setDefaultsOnInsert: true }
   );
   console.log("  - ব্রেকফাস্ট কম্বো / Breakfast Combo — ৳1850");
+
+  // Testimonials — only seed if the collection is completely empty, so
+  // re-running this script doesn't resurrect reviews an admin has since
+  // edited or deleted from the admin panel.
+  console.log("\nChecking testimonials...");
+  const existingTestimonialCount = await Testimonial.countDocuments();
+  if (existingTestimonialCount > 0) {
+    console.log("  - Testimonials already exist, left untouched.");
+  } else {
+    for (const item of testimonials) {
+      await Testimonial.create(item);
+      console.log(`  - ${item.nameBn} / ${item.nameEn}`);
+    }
+  }
 
   // Settings — only create if it doesn't already exist (don't overwrite
   // real values the admin may have already set in Settings).

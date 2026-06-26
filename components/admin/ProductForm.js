@@ -1,3 +1,4 @@
+// components/admin/ProductForm.js
 "use client";
 
 import { useState } from "react";
@@ -76,6 +77,9 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Capture before we overwrite it with the local preview below.
+    const previousUrl = form.imageUrl;
+
     // Instant local preview, matching the mockup's feel.
     const localUrl = URL.createObjectURL(file);
     update("imageUrl", localUrl);
@@ -86,6 +90,7 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
     try {
       const body = new FormData();
       body.append("file", file);
+      if (previousUrl) body.append("oldUrl", previousUrl);
       const res = await fetch("/api/upload", { method: "POST", body });
       const data = await res.json();
       if (!res.ok) {

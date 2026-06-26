@@ -2,6 +2,7 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
 import Combo from "@/models/Combo";
+import { deleteCloudinaryImage } from "@/lib/cloudinary";
 
 export async function GET(request, { params }) {
   const { id } = await params;
@@ -62,6 +63,9 @@ export async function DELETE(request, { params }) {
     if (!combo) {
       return Response.json({ error: "Not found" }, { status: 404 });
     }
+    // Best-effort cleanup — a failed Cloudinary delete should never undo
+    // (or block the response for) a combo deletion that already succeeded.
+    await deleteCloudinaryImage(combo.image);
     return Response.json({ ok: true });
   } catch (err) {
     return Response.json(

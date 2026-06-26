@@ -1,18 +1,17 @@
-// app/api/banners/[id]/route.js
+// app/api/testimonials/[id]/route.js
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
-import Banner from "@/models/Banner";
-import { deleteCloudinaryImage } from "@/lib/cloudinary";
+import Testimonial from "@/models/Testimonial";
 
 export async function GET(request, { params }) {
   const { id } = await params;
   try {
     await connectToDatabase();
-    const banner = await Banner.findById(id);
-    if (!banner) {
+    const testimonial = await Testimonial.findById(id);
+    if (!testimonial) {
       return Response.json({ error: "Not found" }, { status: 404 });
     }
-    return Response.json(banner);
+    return Response.json(testimonial);
   } catch (err) {
     return Response.json(
       { error: `Database error: ${err.message}` },
@@ -37,14 +36,14 @@ export async function PUT(request, { params }) {
 
   try {
     await connectToDatabase();
-    const banner = await Banner.findByIdAndUpdate(id, body, {
+    const testimonial = await Testimonial.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,
     });
-    if (!banner) {
+    if (!testimonial) {
       return Response.json({ error: "Not found" }, { status: 404 });
     }
-    return Response.json(banner);
+    return Response.json(testimonial);
   } catch (err) {
     return Response.json({ error: err.message }, { status: 400 });
   }
@@ -59,13 +58,10 @@ export async function DELETE(request, { params }) {
   const { id } = await params;
   try {
     await connectToDatabase();
-    const banner = await Banner.findByIdAndDelete(id);
-    if (!banner) {
+    const testimonial = await Testimonial.findByIdAndDelete(id);
+    if (!testimonial) {
       return Response.json({ error: "Not found" }, { status: 404 });
     }
-    // Best-effort cleanup — a failed Cloudinary delete should never undo
-    // (or block the response for) a banner deletion that already succeeded.
-    await deleteCloudinaryImage(banner.image);
     return Response.json({ ok: true });
   } catch (err) {
     return Response.json(

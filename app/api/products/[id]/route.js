@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
 import Product from "@/models/Product";
 import { friendlyDbError } from "@/lib/errors";
+import { deleteCloudinaryImage } from "@/lib/cloudinary";
 
 export async function GET(request, { params }) {
   const { id } = await params;
@@ -63,6 +64,9 @@ export async function DELETE(request, { params }) {
     if (!product) {
       return Response.json({ error: "Not found" }, { status: 404 });
     }
+    // Best-effort cleanup — a failed Cloudinary delete should never undo
+    // (or block the response for) a product deletion that already succeeded.
+    await Promise.all((product.images || []).map(deleteCloudinaryImage));
     return Response.json({ ok: true });
   } catch (err) {
     return Response.json(

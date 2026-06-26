@@ -1,3 +1,4 @@
+// components/site/Footer.js
 "use client";
 
 import Link from "next/link";
@@ -13,7 +14,7 @@ export default function Footer({ categories, settings, hasActiveCombo }) {
         <div className="site-grid">
           <div>
             <p style={{ marginTop: 10, color: "var(--brand-green-100)", fontSize: 13 }}>
-              {t("বিশুদ্ধতার পরিচয়", "The mark of purity")}
+              {t(settings.tagline?.bn, settings.tagline?.en)}
             </p>
             <div className="social">
               {settings.facebookUrl && (

@@ -1,3 +1,4 @@
+// components/admin/AdminShell.js
 "use client";
 
 import { useState } from "react";
@@ -11,6 +12,7 @@ const NAV_ITEMS = [
   { href: "/admin/categories", icon: "ti-category", label: "ক্যাটাগরি" },
   { href: "/admin/combos", icon: "ti-package", label: "কম্বো অফার" },
   { href: "/admin/banners", icon: "ti-photo", label: "ব্যানার" },
+  { href: "/admin/testimonials", icon: "ti-message-2-star", label: "গ্রাহক মতামত" },
 ];
 
 const BOTTOM_NAV_ITEMS = [
@@ -23,6 +25,7 @@ const TITLES = {
   "/admin/categories": "ক্যাটাগরি",
   "/admin/combos": "কম্বো অফার",
   "/admin/banners": "ব্যানার",
+  "/admin/testimonials": "গ্রাহক মতামত",
   "/admin/settings": "সেটিংস",
 };
 

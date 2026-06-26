@@ -12,6 +12,7 @@ import Category from "@/models/Category";
 import Product from "@/models/Product";
 import Combo from "@/models/Combo";
 import Settings from "@/models/Settings";
+import Testimonial from "@/models/Testimonial";
 import HomeClient from "@/components/site/HomeClient";
 
 // Always fetch fresh data — this is a small catalog, not a high-traffic
@@ -29,11 +30,12 @@ async function getSettings() {
 export default async function HomePage() {
   await connectToDatabase();
 
-  const [categoriesRaw, productsRaw, combosRaw, settingsRaw] = await Promise.all([
+  const [categoriesRaw, productsRaw, combosRaw, settingsRaw, testimonialsRaw] = await Promise.all([
     Category.find().sort({ sortOrder: 1 }),
     Product.find().populate("category"),
     Combo.find({ isActive: true }).populate("productIds"),
     getSettings(),
+    Testimonial.find({ isActive: true }).sort({ sortOrder: 1 }),
   ]);
 
   // Plain-JSON-serialize everything before handing it to a Client Component
@@ -42,6 +44,7 @@ export default async function HomePage() {
   const products = JSON.parse(JSON.stringify(productsRaw));
   const combos = JSON.parse(JSON.stringify(combosRaw));
   const settings = JSON.parse(JSON.stringify(settingsRaw));
+  const testimonials = JSON.parse(JSON.stringify(testimonialsRaw));
 
   // isTrending specifically drives the hero spotlight card; isFeatured is a
   // separate, lighter-touch flag that just sorts a product first within its
@@ -74,6 +77,7 @@ export default async function HomePage() {
       featuredProduct={featuredProduct}
       activeCombo={activeCombo}
       settings={settings}
+      testimonials={testimonials}
     />
   );
 }
