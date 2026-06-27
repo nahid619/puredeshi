@@ -34,6 +34,12 @@ const TrustBadgeSchema = new mongoose.Schema(
 const SettingsSchema = new mongoose.Schema(
   {
     whatsappNumber: { type: String, default: "+8801XXXXXXXXX" },
+    // Separate from whatsappNumber on purpose — this is the plain phone
+    // number shown in the topbar as a tap-to-call (tel:) link. It can be a
+    // landline or a different number entirely from the WhatsApp one; they
+    // were two separate elements in the original mockup and shouldn't have
+    // been collapsed into one.
+    phoneNumber: { type: String, default: "+8801XXXXXXXXX" },
     orderMessageTemplateBn: {
       type: String,
       default: "আমি {প্রোডাক্ট} ({দাম}) অর্ডার করতে চাই।",

@@ -119,7 +119,18 @@ export default function SettingsPage() {
           যোগাযোগ ও অর্ডার
         </h2>
         <div>
-          <label className={labelClass}>হোয়াটসঅ্যাপ নম্বর</label>
+          <label className={labelClass}>ফোন নম্বর (টপবারে দেখাবে, কল করার জন্য)</label>
+          <input
+            value={form.phoneNumber}
+            onChange={(e) => update("phoneNumber", e.target.value)}
+            className={inputClass}
+          />
+          <p className="text-[11.5px] text-[var(--admin-gray-500)] mt-1">
+            এটা আলাদা — হোয়াটসঅ্যাপ নম্বর থেকে ভিন্ন কোনো নম্বরও হতে পারে (যেমন ল্যান্ডলাইন)।
+          </p>
+        </div>
+        <div>
+          <label className={labelClass}>হোয়াটসঅ্যাপ নম্বর (&ldquo;হোয়াটসঅ্যাপে অর্ডার করুন&rdquo; বাটনে যাবে)</label>
           <input
             value={form.whatsappNumber}
             onChange={(e) => update("whatsappNumber", e.target.value)}

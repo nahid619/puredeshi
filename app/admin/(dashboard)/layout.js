@@ -10,6 +10,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import AdminShell from "@/components/admin/AdminShell";
+import { AdminProviders } from "@/components/admin/AdminProviders";
 import "@tabler/icons-webfont/dist/tabler-icons.css";
 
 export const metadata = {
@@ -22,5 +23,9 @@ export default async function AdminProtectedLayout({ children }) {
     redirect("/admin/login");
   }
 
-  return <AdminShell username={session.username}>{children}</AdminShell>;
+  return (
+    <AdminProviders>
+      <AdminShell username={session.username}>{children}</AdminShell>
+    </AdminProviders>
+  );
 }

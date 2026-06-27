@@ -22,8 +22,11 @@ export default function Header({ categories, settings, hasActiveCombo }) {
       <div className="site-topbar">
         <div className="site-wrap">
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <a href={`tel:${settings.phoneNumber}`}>
+              <i className="ti ti-phone" /> {settings.phoneNumber}
+            </a>
             <a href={waLink} target="_blank" rel="noreferrer">
-              <i className="ti ti-brand-whatsapp" /> {settings.whatsappNumber}
+              <i className="ti ti-brand-whatsapp" /> {t("হোয়াটসঅ্যাপে অর্ডার করুন", "Order on WhatsApp")}
             </a>
           </div>
           <div className="site-icon-cluster">

@@ -5,31 +5,32 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { useAdminLang, useAdminT } from "./AdminProviders";
 
 const NAV_ITEMS = [
-  { href: "/admin", icon: "ti-layout-dashboard", label: "ড্যাশবোর্ড" },
-  { href: "/admin/products", icon: "ti-shopping-bag", label: "প্রোডাক্ট" },
-  { href: "/admin/categories", icon: "ti-category", label: "ক্যাটাগরি" },
-  { href: "/admin/combos", icon: "ti-package", label: "কম্বো অফার" },
-  { href: "/admin/banners", icon: "ti-photo", label: "ব্যানার" },
-  { href: "/admin/testimonials", icon: "ti-message-2-star", label: "গ্রাহক মতামত" },
+  { href: "/admin", icon: "ti-layout-dashboard", bn: "ড্যাশবোর্ড", en: "Dashboard" },
+  { href: "/admin/products", icon: "ti-shopping-bag", bn: "প্রোডাক্ট", en: "Products" },
+  { href: "/admin/categories", icon: "ti-category", bn: "ক্যাটাগরি", en: "Categories" },
+  { href: "/admin/combos", icon: "ti-package", bn: "কম্বো অফার", en: "Combo Offers" },
+  { href: "/admin/banners", icon: "ti-photo", bn: "ব্যানার", en: "Banners" },
+  { href: "/admin/testimonials", icon: "ti-message-2-star", bn: "গ্রাহক মতামত", en: "Testimonials" },
 ];
 
 const BOTTOM_NAV_ITEMS = [
-  { href: "/admin/settings", icon: "ti-settings", label: "সেটিংস" },
+  { href: "/admin/settings", icon: "ti-settings", bn: "সেটিংস", en: "Settings" },
 ];
 
 const TITLES = {
-  "/admin": "ড্যাশবোর্ড",
-  "/admin/products": "প্রোডাক্ট",
-  "/admin/categories": "ক্যাটাগরি",
-  "/admin/combos": "কম্বো অফার",
-  "/admin/banners": "ব্যানার",
-  "/admin/testimonials": "গ্রাহক মতামত",
-  "/admin/settings": "সেটিংস",
+  "/admin": { bn: "ড্যাশবোর্ড", en: "Dashboard" },
+  "/admin/products": { bn: "প্রোডাক্ট", en: "Products" },
+  "/admin/categories": { bn: "ক্যাটাগরি", en: "Categories" },
+  "/admin/combos": { bn: "কম্বো অফার", en: "Combo Offers" },
+  "/admin/banners": { bn: "ব্যানার", en: "Banners" },
+  "/admin/testimonials": { bn: "গ্রাহক মতামত", en: "Testimonials" },
+  "/admin/settings": { bn: "সেটিংস", en: "Settings" },
 };
 
-function NavLink({ href, icon, label, active }) {
+function NavLink({ href, icon, bn, en, active, t }) {
   return (
     <Link
       href={href}
@@ -40,7 +41,7 @@ function NavLink({ href, icon, label, active }) {
       }`}
     >
       <i className={`ti ${icon} text-lg w-5`} />
-      {label}
+      {t(bn, en)}
     </Link>
   );
 }
@@ -49,8 +50,11 @@ export default function AdminShell({ username, children }) {
   const pathname = usePathname();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
+  const { lang, toggleLang } = useAdminLang();
+  const t = useAdminT();
 
-  const pageTitle = TITLES[pathname] || "অ্যাডমিন";
+  const title = TITLES[pathname] || { bn: "অ্যাডমিন", en: "Admin" };
+  const pageTitle = t(title.bn, title.en);
   const initials = (username || "PD").slice(0, 2).toUpperCase();
 
   async function handleLogout() {
@@ -81,13 +85,15 @@ export default function AdminShell({ username, children }) {
             <div className="font-bold text-[15px] text-white" style={{ fontFamily: "var(--font-heading)" }}>
               Pure Deshi
             </div>
-            <div className="text-[10.5px] text-[var(--brand-green-100)]">Admin Panel</div>
+            <div className="text-[10.5px] text-[var(--brand-green-100)]">
+              {t("অ্যাডমিন প্যানেল", "Admin Panel")}
+            </div>
           </div>
         </div>
 
         <nav className="flex flex-col">
           {NAV_ITEMS.map((item) => (
-            <NavLink key={item.href} {...item} active={pathname === item.href} />
+            <NavLink key={item.href} {...item} t={t} active={pathname === item.href} />
           ))}
         </nav>
 
@@ -95,7 +101,7 @@ export default function AdminShell({ username, children }) {
 
         <div className="border-t border-white/10 pt-2.5 mt-2.5">
           {BOTTOM_NAV_ITEMS.map((item) => (
-            <NavLink key={item.href} {...item} active={pathname === item.href} />
+            <NavLink key={item.href} {...item} t={t} active={pathname === item.href} />
           ))}
           <button
             onClick={handleLogout}
@@ -103,7 +109,7 @@ export default function AdminShell({ username, children }) {
             className="flex items-center gap-3 px-5 py-2.5 text-sm font-medium text-[var(--brand-green-100)] hover:bg-white/5 transition-colors w-full text-left disabled:opacity-60"
           >
             <i className="ti ti-logout text-lg w-5" />
-            {loggingOut ? "লগ আউট হচ্ছে…" : "লগ আউট"}
+            {loggingOut ? t("লগ আউট হচ্ছে…", "Logging out…") : t("লগ আউট", "Log out")}
           </button>
         </div>
       </aside>
@@ -117,7 +123,7 @@ export default function AdminShell({ username, children }) {
           <h1 className="text-[19px] font-semibold" style={{ fontFamily: "var(--font-heading)" }}>
             {pageTitle}
           </h1>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <a
               href="/"
               target="_blank"
@@ -125,9 +131,17 @@ export default function AdminShell({ username, children }) {
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-[var(--admin-gray-200)] text-[var(--admin-gray-700)] hover:bg-[var(--admin-gray-50)] transition-colors"
             >
               <i className="ti ti-external-link" />
-              সাইট দেখুন
+              {t("সাইট দেখুন", "View site")}
             </a>
-            <div className="flex items-center gap-2 text-sm text-[var(--admin-gray-700)]">
+            <button
+              onClick={toggleLang}
+              title={t("ভাষা পরিবর্তন করুন", "Change language")}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-[var(--admin-gray-200)] text-[var(--admin-gray-700)] hover:bg-[var(--admin-gray-50)] transition-colors"
+            >
+              <i className="ti ti-language" />
+              {lang === "bn" ? "EN" : "বাং"}
+            </button>
+            <div className="flex items-center gap-2 text-sm text-[var(--admin-gray-700)] ml-1">
               <div className="w-8 h-8 rounded-full bg-[var(--brand-amber-200)] flex items-center justify-center font-semibold text-xs text-[var(--brand-amber-900)]">
                 {initials}
               </div>
