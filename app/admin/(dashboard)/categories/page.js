@@ -24,7 +24,7 @@ function CategoryForm({ form, setForm, saving, formError, onSubmit, onCancel }) 
         <input
           value={form.nameBn}
           onChange={(e) => setForm((f) => ({ ...f, nameBn: e.target.value }))}
-          className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+          className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
         />
       </div>
       <div className="mb-4">
@@ -34,7 +34,7 @@ function CategoryForm({ form, setForm, saving, formError, onSubmit, onCancel }) 
         <input
           value={form.nameEn}
           onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
-          className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+          className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
         />
       </div>
       <div className="mb-4">
@@ -45,7 +45,7 @@ function CategoryForm({ form, setForm, saving, formError, onSubmit, onCancel }) 
           value={form.icon}
           onChange={(e) => setForm((f) => ({ ...f, icon: e.target.value }))}
           placeholder="ti-droplet"
-          className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+          className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
         />
         <p className="text-[11.5px] text-[var(--admin-gray-500)] mt-1.5">
           আইকনের নাম দেখতে চাইলে{" "}
@@ -64,7 +64,7 @@ function CategoryForm({ form, setForm, saving, formError, onSubmit, onCancel }) 
             value={form.taglineBn}
             onChange={(e) => setForm((f) => ({ ...f, taglineBn: e.target.value }))}
             placeholder="যেমনঃ রান্নার মূল উপকরণ"
-            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
           />
         </div>
         <div>
@@ -75,7 +75,7 @@ function CategoryForm({ form, setForm, saving, formError, onSubmit, onCancel }) 
             value={form.taglineEn}
             onChange={(e) => setForm((f) => ({ ...f, taglineEn: e.target.value }))}
             placeholder="e.g. Kitchen essentials"
-            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
           />
         </div>
       </div>
@@ -228,7 +228,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
+    <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
       <div className="flex justify-end px-5 py-4.5 border-b border-[var(--admin-gray-100)]">
         <button
           onClick={openAdd}

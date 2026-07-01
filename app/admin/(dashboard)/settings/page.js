@@ -114,7 +114,7 @@ export default function SettingsPage() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6 max-w-2xl">
       {/* ── Contact & order settings (unchanged) ───────────────────────── */}
-      <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
+      <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
         <h2 className="font-semibold text-[15px]" style={{ fontFamily: "var(--font-heading)" }}>
           যোগাযোগ ও অর্ডার
         </h2>
@@ -169,7 +169,7 @@ export default function SettingsPage() {
       </div>
 
       {/* ── Branding ────────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
+      <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
         <h2 className="font-semibold text-[15px]" style={{ fontFamily: "var(--font-heading)" }}>
           ব্র্যান্ডিং
         </h2>
@@ -204,7 +204,7 @@ export default function SettingsPage() {
             <img
               src={form.logoUrl}
               alt=""
-              className="w-12 h-12 object-cover rounded-full bg-white"
+              className="w-12 h-12 object-cover rounded-full bg-[var(--admin-surface)]"
             />
             <span className="text-[12.5px] text-[var(--admin-gray-500)]">
               {uploadingLogo ? "আপলোড হচ্ছে…" : "নতুন লোগো আপলোড করতে ক্লিক করুন"}
@@ -221,7 +221,7 @@ export default function SettingsPage() {
       </div>
 
       {/* ── Our Story section ──────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
+      <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
         <h2 className="font-semibold text-[15px]" style={{ fontFamily: "var(--font-heading)" }}>
           আমাদের গল্প (হোমপেজ সেকশন)
         </h2>
@@ -262,7 +262,7 @@ export default function SettingsPage() {
       </div>
 
       {/* ── Trust strip badges ─────────────────────────────────────────── */}
-      <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
+      <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-6 flex flex-col gap-4">
         <h2 className="font-semibold text-[15px]" style={{ fontFamily: "var(--font-heading)" }}>
           ট্রাস্ট ব্যাজ (হিরো সেকশনের নিচে ৪টি)
         </h2>

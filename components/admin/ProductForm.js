@@ -4,6 +4,25 @@
 import { useState } from "react";
 import { formatTaka, BADGE_OPTIONS, BADGE_LABELS } from "@/lib/bn";
 
+// ── Bengali ↔ Arabic numeral helpers for price inputs ─────────────────────
+const BN_DIGITS = "০১২৩৪৫৬৭৮৯";
+const EN_DIGITS = "0123456789";
+
+/** "1500" → "১৫০০"  (Arabic → Bengali digits, keeps decimal dots) */
+function tobn(str) {
+  return String(str).replace(/[0-9]/g, (d) => BN_DIGITS[d]);
+}
+
+/** "১৫০০" → "1500"  (Bengali → Arabic digits, passes through normal chars) */
+function toen(str) {
+  return String(str).replace(/[০-৯]/g, (d) => EN_DIGITS[BN_DIGITS.indexOf(d)]);
+}
+
+/** Extract only digit characters (Arabic or Bengali) from a string */
+function digitsOnly(str) {
+  return str.replace(/[^0-9০-৯.]/g, "");
+}
+
 function splitLines(text) {
   return text
     .split("\n")
@@ -198,34 +217,104 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
           </Row2>
 
           <SectionTitle>দাম</SectionTitle>
-          <Row2>
-            <Field label="পুরোনো দাম (অফার না থাকলে খালি রাখুন)">
-              <input
-                type="number"
-                value={form.priceRegular}
-                onChange={(e) => update("priceRegular", e.target.value)}
-                placeholder="১০৫০"
-              />
-            </Field>
-            <Field label="বর্তমান দাম">
-              <input
-                type="number"
-                value={form.priceCurrent}
-                onChange={(e) => update("priceCurrent", e.target.value)}
-                placeholder="৯৫০"
-              />
-            </Field>
-          </Row2>
-          <p className="text-[11.5px] text-[var(--admin-gray-500)] -mt-2.5 mb-3.5">
-            পুরোনো দাম পূরণ করলে সেটা কাটা (crossed-out) দেখাবে এবং বর্তমান দাম লাল রঙে অফার
-            প্রাইস হিসেবে দেখাবে। পুরোনো দাম খালি থাকলে বর্তমান দাম স্বাভাবিক সবুজ রঙে দেখাবে।
+
+          {/* ── Regular (old/crossed-out) price ── */}
+          <div className="mb-1">
+            <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+              পুরোনো দাম{" "}
+              <span className="font-normal text-[var(--admin-gray-500)]">
+                (অফার না থাকলে খালি রাখুন)
+              </span>
+            </label>
+            <div className="grid grid-cols-2 gap-2.5">
+              {/* English input — stores the actual number */}
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-gray-400)] text-xs font-bold select-none">
+                  EN
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.priceRegular}
+                  onChange={(e) => {
+                    const raw = digitsOnly(toen(e.target.value));
+                    update("priceRegular", raw);
+                  }}
+                  placeholder="1050"
+                  className="w-full border border-[var(--admin-gray-200)] rounded-lg pl-9 pr-3 py-2.5 text-sm bg-[var(--admin-surface)]"
+                />
+              </div>
+              {/* Bengali display input — converts to Arabic on change */}
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-gray-400)] text-xs font-bold select-none">
+                  বাং
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.priceRegular !== "" ? tobn(form.priceRegular) : ""}
+                  onChange={(e) => {
+                    const raw = digitsOnly(toen(e.target.value));
+                    update("priceRegular", raw);
+                  }}
+                  placeholder="১০৫০"
+                  className="w-full border border-[var(--admin-gray-200)] rounded-lg pl-9 pr-3 py-2.5 text-sm bg-[var(--admin-surface)]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ── Current price ── */}
+          <div className="mb-1">
+            <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
+              বর্তমান দাম
+            </label>
+            <div className="grid grid-cols-2 gap-2.5">
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-gray-400)] text-xs font-bold select-none">
+                  EN
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.priceCurrent}
+                  onChange={(e) => {
+                    const raw = digitsOnly(toen(e.target.value));
+                    update("priceCurrent", raw);
+                  }}
+                  placeholder="950"
+                  className="w-full border border-[var(--admin-gray-200)] rounded-lg pl-9 pr-3 py-2.5 text-sm bg-[var(--admin-surface)]"
+                />
+              </div>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-gray-400)] text-xs font-bold select-none">
+                  বাং
+                </span>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  value={form.priceCurrent !== "" ? tobn(form.priceCurrent) : ""}
+                  onChange={(e) => {
+                    const raw = digitsOnly(toen(e.target.value));
+                    update("priceCurrent", raw);
+                  }}
+                  placeholder="৯৫০"
+                  className="w-full border border-[var(--admin-gray-200)] rounded-lg pl-9 pr-3 py-2.5 text-sm bg-[var(--admin-surface)]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <p className="text-[11.5px] text-[var(--admin-gray-500)] mt-1.5 mb-3.5">
+            EN বক্সে ইংরেজি নম্বর লিখলে বাং বক্স স্বয়ংক্রিয়ভাবে আপডেট হবে, এবং উল্টোটাও।
+            পুরোনো দাম পূরণ করলে সেটা কাটা দেখাবে; খালি রাখলে বর্তমান দাম স্বাভাবিক সবুজে দেখাবে।
           </p>
 
           <SectionTitle>ছবি</SectionTitle>
           <div className="mb-4">
             <div
               onClick={() => document.getElementById("f-image").click()}
-              className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4.5 text-center bg-white cursor-pointer"
+              className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4.5 text-center bg-[var(--admin-surface)] cursor-pointer"
             >
               {form.imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
@@ -398,7 +487,7 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
           <div className="text-xs font-bold uppercase tracking-wide text-[var(--admin-gray-500)] mb-2.5">
             লাইভ প্রিভিউ — ফ্রন্টএন্ডে এভাবে দেখাবে
           </div>
-          <div className="bg-white rounded-2xl shadow-[0_8px_20px_rgba(23,52,4,0.1)] overflow-hidden max-w-[230px] sticky top-5">
+          <div className="bg-[var(--admin-surface)] rounded-2xl shadow-[0_8px_20px_rgba(23,52,4,0.1)] overflow-hidden max-w-[230px] sticky top-5">
             <div className="h-[120px] bg-gradient-to-br from-[var(--brand-amber-50)] to-[#fff5e4] flex items-center justify-center relative">
               {form.badge !== "none" && (
                 <span className="absolute top-2 left-2 text-[10px] font-bold px-2 py-1 rounded-full bg-[var(--brand-coral-50)] text-[var(--brand-coral-600)]">
@@ -455,7 +544,7 @@ function Field({ label, children }) {
       <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
         {label}
       </label>
-      <div className="[&_input]:w-full [&_input]:border [&_input]:border-[var(--admin-gray-200)] [&_input]:rounded-lg [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-sm [&_input]:bg-white [&_select]:w-full [&_select]:border [&_select]:border-[var(--admin-gray-200)] [&_select]:rounded-lg [&_select]:px-3 [&_select]:py-2.5 [&_select]:text-sm [&_select]:bg-white [&_textarea]:w-full [&_textarea]:border [&_textarea]:border-[var(--admin-gray-200)] [&_textarea]:rounded-lg [&_textarea]:px-3 [&_textarea]:py-2.5 [&_textarea]:text-sm [&_textarea]:bg-white">
+      <div className="[&_input]:w-full [&_input]:border [&_input]:border-[var(--admin-gray-200)] [&_input]:rounded-lg [&_input]:px-3 [&_input]:py-2.5 [&_input]:text-sm [&_input]:bg-[var(--admin-surface)] [&_select]:w-full [&_select]:border [&_select]:border-[var(--admin-gray-200)] [&_select]:rounded-lg [&_select]:px-3 [&_select]:py-2.5 [&_select]:text-sm [&_select]:bg-[var(--admin-surface)] [&_textarea]:w-full [&_textarea]:border [&_textarea]:border-[var(--admin-gray-200)] [&_textarea]:rounded-lg [&_textarea]:px-3 [&_textarea]:py-2.5 [&_textarea]:text-sm [&_textarea]:bg-[var(--admin-surface)]">
         {children}
       </div>
     </div>
@@ -464,7 +553,7 @@ function Field({ label, children }) {
 
 function ToggleRow({ label, checked, onChange }) {
   return (
-    <div className="flex justify-between items-center bg-white border border-[var(--admin-gray-200)] rounded-lg px-3.5 py-2.5 mb-3">
+    <div className="flex justify-between items-center bg-[var(--admin-surface)] border border-[var(--admin-gray-200)] rounded-lg px-3.5 py-2.5 mb-3">
       <span className="text-sm">{label}</span>
       <div
         role="switch"

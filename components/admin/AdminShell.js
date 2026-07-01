@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { useAdminLang, useAdminT } from "./AdminProviders";
+import { useAdminLang, useAdminT, useAdminTheme } from "./AdminProviders";
 
 const NAV_ITEMS = [
   { href: "/admin", icon: "ti-layout-dashboard", bn: "ড্যাশবোর্ড", en: "Dashboard" },
@@ -51,6 +51,7 @@ export default function AdminShell({ username, children }) {
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
   const { lang, toggleLang } = useAdminLang();
+  const { theme, toggleTheme } = useAdminTheme();
   const t = useAdminT();
 
   const title = TITLES[pathname] || { bn: "অ্যাডমিন", en: "Admin" };
@@ -68,7 +69,7 @@ export default function AdminShell({ username, children }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--admin-gray-50)] text-[var(--admin-gray-900)]">
+    <div className={`flex h-screen overflow-hidden bg-[var(--admin-gray-50)] text-[var(--admin-gray-900)] ${theme === "dark" ? "admin-dark" : ""}`}>
       {/* Sidebar — fixed height (h-screen on the parent), never scrolls with
           the page. Its own overflow-y-auto is just a safety net for if the
           nav list ever grows taller than the viewport someday. */}
@@ -119,7 +120,7 @@ export default function AdminShell({ username, children }) {
           content div below it scrolls. */}
       <div className="flex-1 min-w-0 flex flex-col overflow-hidden">
         {/* Top bar — shrink-0 so it stays put and never gets pushed/scrolled */}
-        <div className="bg-white border-b border-[var(--admin-gray-200)] px-7 py-4 flex justify-between items-center shrink-0">
+        <div className="bg-[var(--admin-surface)] border-b border-[var(--admin-gray-200)] px-7 py-4 flex justify-between items-center shrink-0">
           <h1 className="text-[19px] font-semibold" style={{ fontFamily: "var(--font-heading)" }}>
             {pageTitle}
           </h1>
@@ -133,6 +134,14 @@ export default function AdminShell({ username, children }) {
               <i className="ti ti-external-link" />
               {t("সাইট দেখুন", "View site")}
             </a>
+            <button
+              onClick={toggleTheme}
+              title={theme === "dark" ? t("লাইট মোড", "Light mode") : t("ডার্ক মোড", "Dark mode")}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[13px] font-medium border border-[var(--admin-gray-200)] text-[var(--admin-gray-700)] hover:bg-[var(--admin-gray-50)] transition-colors"
+            >
+              <i className={`ti ${theme === "dark" ? "ti-sun" : "ti-moon"}`} />
+              {theme === "dark" ? t("লাইট", "Light") : t("ডার্ক", "Dark")}
+            </button>
             <button
               onClick={toggleLang}
               title={t("ভাষা পরিবর্তন করুন", "Change language")}

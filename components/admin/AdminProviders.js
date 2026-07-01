@@ -14,38 +14,50 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AdminContext = createContext(null);
-const LANG_KEY = "pure-deshi-admin-lang";
+const LANG_KEY   = "pure-deshi-admin-lang";
+const THEME_KEY  = "pure-deshi-admin-theme";
 
 export function AdminProviders({ children }) {
-  const [lang, setLang] = useState("bn");
-
-  // Runs once on mount only. Defaults stay "bn" until this runs, since
-  // localStorage doesn't exist during server rendering.
-  useEffect(() => {
+  // Lazy initializers run once on first render (client-side only).
+  // This avoids calling setState inside a useEffect, which ESLint flags
+  // as a cascading-render risk. localStorage isn't available during SSR,
+  // so the try/catch handles that edge case gracefully.
+  const [lang, setLang] = useState(() => {
     try {
       const saved = localStorage.getItem(LANG_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of an external system (localStorage) on mount, not a render-triggered cascade
-      if (saved === "bn" || saved === "en") setLang(saved);
-    } catch {
-      // Some browser privacy modes throw on localStorage access — fall
-      // back to the default silently, not worth surfacing to the admin.
-    }
-  }, []);
+      if (saved === "bn" || saved === "en") return saved;
+    } catch { /* SSR or privacy mode — fall through */ }
+    return "bn";
+  });
+
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem(THEME_KEY);
+      if (saved === "light") return "light";
+    } catch { /* SSR or privacy mode — fall through */ }
+    return "dark"; // admin panel defaults to dark
+  });
 
   function toggleLang() {
     setLang((l) => {
       const next = l === "bn" ? "en" : "bn";
-      try {
-        localStorage.setItem(LANG_KEY, next);
-      } catch {
-        // Same as above — persistence is a nice-to-have, not essential.
-      }
+      try { localStorage.setItem(LANG_KEY, next); } catch { /* ignored */ }
+      return next;
+    });
+  }
+
+  function toggleTheme() {
+    setTheme((t) => {
+      const next = t === "dark" ? "light" : "dark";
+      try { localStorage.setItem(THEME_KEY, next); } catch { /* ignored */ }
       return next;
     });
   }
 
   return (
-    <AdminContext.Provider value={{ lang, toggleLang }}>{children}</AdminContext.Provider>
+    <AdminContext.Provider value={{ lang, toggleLang, theme, toggleTheme }}>
+      {children}
+    </AdminContext.Provider>
   );
 }
 
@@ -55,6 +67,12 @@ export function useAdminLang() {
     throw new Error("useAdminLang must be used within AdminProviders");
   }
   return ctx;
+}
+
+export function useAdminTheme() {
+  const ctx = useContext(AdminContext);
+  if (!ctx) throw new Error("useAdminTheme must be used within AdminProviders");
+  return { theme: ctx.theme, toggleTheme: ctx.toggleTheme };
 }
 
 /**

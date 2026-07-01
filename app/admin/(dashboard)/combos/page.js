@@ -45,7 +45,7 @@ function ComboForm({
           <input
             value={form.nameBn}
             onChange={(e) => setForm((f) => ({ ...f, nameBn: e.target.value }))}
-            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
           />
         </div>
         <div>
@@ -55,7 +55,7 @@ function ComboForm({
           <input
             value={form.nameEn}
             onChange={(e) => setForm((f) => ({ ...f, nameEn: e.target.value }))}
-            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
           />
         </div>
       </div>
@@ -64,7 +64,7 @@ function ComboForm({
         <label className="block text-[12.5px] font-semibold text-[var(--admin-gray-700)] mb-1.5">
           প্রোডাক্ট বেছে নিন
         </label>
-        <div className="bg-white border border-[var(--admin-gray-200)] rounded-lg p-3 max-h-44 overflow-y-auto flex flex-col gap-1.5">
+        <div className="bg-[var(--admin-surface)] border border-[var(--admin-gray-200)] rounded-lg p-3 max-h-44 overflow-y-auto flex flex-col gap-1.5">
           {products.map((p) => (
             <label key={p._id} className="flex items-center gap-2 text-sm">
               <input
@@ -87,7 +87,7 @@ function ComboForm({
             type="number"
             value={form.priceRegular}
             onChange={(e) => setForm((f) => ({ ...f, priceRegular: e.target.value }))}
-            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
           />
         </div>
         <div>
@@ -98,7 +98,7 @@ function ComboForm({
             type="number"
             value={form.priceCombo}
             onChange={(e) => setForm((f) => ({ ...f, priceCombo: e.target.value }))}
-            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+            className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
           />
         </div>
       </div>
@@ -109,7 +109,7 @@ function ComboForm({
         </label>
         <div
           onClick={() => document.getElementById("combo-image").click()}
-          className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4 text-center bg-white cursor-pointer"
+          className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4 text-center bg-[var(--admin-surface)] cursor-pointer"
         >
           {form.image ? (
             // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
@@ -130,7 +130,7 @@ function ComboForm({
         />
       </div>
 
-      <div className="flex justify-between items-center bg-white border border-[var(--admin-gray-200)] rounded-lg px-3.5 py-2.5 mb-4">
+      <div className="flex justify-between items-center bg-[var(--admin-surface)] border border-[var(--admin-gray-200)] rounded-lg px-3.5 py-2.5 mb-4">
         <span className="text-sm">অ্যাক্টিভ</span>
         <div
           role="switch"
@@ -314,7 +314,7 @@ export default function CombosPage() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
+    <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
       <div className="flex justify-end px-5 py-4.5 border-b border-[var(--admin-gray-100)]">
         <button
           onClick={openAdd}

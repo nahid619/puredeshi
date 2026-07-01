@@ -129,7 +129,7 @@ export default function TestimonialsPage() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
+    <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
       <div className="flex justify-end px-5 py-4.5 border-b border-[var(--admin-gray-100)]">
         <button
           onClick={openAdd}
@@ -214,7 +214,7 @@ export default function TestimonialsPage() {
               <input
                 value={form.nameBn}
                 onChange={(e) => update("nameBn", e.target.value)}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
               />
             </div>
             <div>
@@ -224,7 +224,7 @@ export default function TestimonialsPage() {
               <input
                 value={form.nameEn}
                 onChange={(e) => update("nameEn", e.target.value)}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
               />
             </div>
             <div>
@@ -234,7 +234,7 @@ export default function TestimonialsPage() {
               <input
                 value={form.roleBn}
                 onChange={(e) => update("roleBn", e.target.value)}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
               />
             </div>
             <div>
@@ -244,7 +244,7 @@ export default function TestimonialsPage() {
               <input
                 value={form.roleEn}
                 onChange={(e) => update("roleEn", e.target.value)}
-                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+                className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
               />
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function TestimonialsPage() {
               onChange={(e) => update("avatar", e.target.value)}
               maxLength={2}
               placeholder="রবে"
-              className="w-32 border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+              className="w-32 border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
             />
           </div>
 
@@ -270,7 +270,7 @@ export default function TestimonialsPage() {
               rows={3}
               value={form.textBn}
               onChange={(e) => update("textBn", e.target.value)}
-              className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+              className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
             />
           </div>
           <div>
@@ -281,7 +281,7 @@ export default function TestimonialsPage() {
               rows={3}
               value={form.textEn}
               onChange={(e) => update("textEn", e.target.value)}
-              className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+              className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
             />
           </div>
 

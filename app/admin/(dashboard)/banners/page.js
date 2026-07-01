@@ -140,7 +140,7 @@ export default function BannersPage() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
+    <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
       <div className="flex justify-end px-5 py-4.5 border-b border-[var(--admin-gray-100)]">
         <button
           onClick={openAdd}
@@ -223,7 +223,7 @@ export default function BannersPage() {
             </label>
             <div
               onClick={() => document.getElementById("banner-image").click()}
-              className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4 text-center bg-white cursor-pointer"
+              className="border-[1.5px] border-dashed border-[var(--admin-gray-200)] rounded-[10px] p-4 text-center bg-[var(--admin-surface)] cursor-pointer"
             >
               {image ? (
                 // eslint-disable-next-line @next/next/no-img-element -- dynamic Cloudinary/blob preview URL, not a static asset
@@ -251,7 +251,7 @@ export default function BannersPage() {
               value={link}
               onChange={(e) => setLink(e.target.value)}
               placeholder="/products/sundarban-honey"
-              className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-white"
+              className="w-full border border-[var(--admin-gray-200)] rounded-lg px-3 py-2.5 text-sm bg-[var(--admin-surface)]"
             />
           </div>
 

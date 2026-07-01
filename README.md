@@ -1,112 +1,169 @@
-# Pure Deshi — Website Project
+# Pure Deshi
 
-This is the real codebase for the Pure Deshi website, being built in phases.
-**This delivery is cumulative Phases 1–5.**
-
----
-
-## What's new in Phase 5 — real content
-
-Phase 5 is mostly content, not code — but one real content gap needed a code
-fix to support it properly (see below).
-
-### 1. Real bilingual content for all 13 products
-Previously only Pabna Ghee had real intro/benefits/ingredients/usage/"why us"
-text — the other 12 products had nothing. I've written real Bangla **and**
-English copy for all 13, following the brand voice rule from the spec
-(simple everyday Bangla — "খাঁটি" / "পুরনো নিয়মে তৈরি", never "ঐতিহ্যবাহী").
-This is in `scripts/seed.mjs` — **run `npm run seed` again** to load it in.
-
-### 2. Fixed: product content wasn't actually bilingual
-While writing this, I found that the database's `content` field only ever
-stored Bangla text — there was no English version at all. So toggling to
-English on a product page would still show Bangla benefit/usage text under
-an English heading. I extended the schema with parallel English fields,
-added matching English textareas to the admin product form (each section
-now shows বাংলা and English side by side), and updated the product page to
-actually switch between them. If you ever leave an English field blank for
-a product you add yourself, it gracefully falls back to showing the Bangla
-text rather than a blank section.
-
-### 3. The three footer pages now exist
-Delivery Info, Return Policy, and FAQ were dead links before. They're now
-real pages with honest starter content (delivery is COD/nationwide-courier,
-matching what the trust strip already says; the return policy is marked as
-a draft for you to confirm matches your actual practice; the FAQ covers the
-basics already true of the site). Edit the text directly in
-`components/site/DeliveryInfoContent.js`, `ReturnPolicyContent.js`, and
-`FaqContent.js` if you want to change the wording — these aren't database
-content yet, just static bilingual text in the code, since they don't need
-day-to-day editing the way products do.
+A full-stack e-commerce website for **Pure Deshi** — a Bangladeshi brand selling traditional, organic food products (ghee, honey, mustard oil, red rice, and more). Orders are placed directly via WhatsApp. The site is fully bilingual in Bangla and English.
 
 ---
 
-## What I genuinely cannot do — and need from you
+## Tech Stack
 
-The rest of Phase 5, per the original plan, is real assets that only you
-have:
-
-1. **Your real WhatsApp business number** — currently a placeholder in
-   Settings. Update it yourself in `/admin/settings`, or tell me the number
-   and I'll explain exactly where it goes.
-2. **Real product photos** — once you have photos (even phone photos are
-   fine to start), upload them per-product in `/admin/products` → edit →
-   the image box. I can't take or generate product photography myself.
-3. **Real testimonials from your Facebook page** — I can format and
-   translate real reviews you paste to me, but I can't fabricate customer
-   quotes or access your Facebook page directly.
-4. **Your real Facebook page URL** — also goes in `/admin/settings`.
-
-None of these need a new code delivery from me — they're all editable
-through the admin panel you already have, except testimonials and the 3
-footer pages (static text, as noted above) which I'd edit directly if you
-send me the real content.
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| UI | React 19, Tailwind CSS v4, Tabler Icons |
+| Database | MongoDB Atlas via Mongoose |
+| Image Hosting | Cloudinary |
+| Auth | JWT (jose) + bcryptjs |
+| Deployment | Vercel |
 
 ---
 
-## Step-by-step: how to test this
+## Getting Started
 
-1. **Re-run the seed script** (safe to run again):
-   ```
-   npm run seed
-   ```
-2. **Start the project**: `npm run dev`
-3. **Check a few product pages** — e.g. `/products/sundarban-honey`,
-   `/products/formalin-free-mango` — confirm the benefits/ingredients/usage
-   sections are filled in, in Bangla. Toggle to English (top-right pill) and
-   confirm the same sections switch to English text.
-4. **Check the new footer pages** — click "Delivery Info", "Return Policy",
-   and "FAQ" in the footer, confirm they load real content instead of dead
-   links, in both languages.
-5. **In `/admin/products`**, edit any product and confirm you now see
-   **two** boxes for each content section — বাংলা and English side by side.
+### Prerequisites
+
+- Node.js 18+
+- A [MongoDB Atlas](https://www.mongodb.com/atlas) cluster
+- A [Cloudinary](https://cloudinary.com) account
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Set up environment variables
+
+Copy the template and fill in your values:
+
+```bash
+cp .env.example .env.local
+```
+
+| Variable | Description |
+|---|---|
+| `MONGODB_URI` | MongoDB Atlas connection string |
+| `CLOUDINARY_CLOUD_NAME` | From your Cloudinary dashboard |
+| `CLOUDINARY_API_KEY` | From your Cloudinary dashboard |
+| `CLOUDINARY_API_SECRET` | From your Cloudinary dashboard |
+| `AUTH_SECRET` | Random secret for signing admin sessions — generate with `openssl rand -base64 32` |
+| `ADMIN_USERNAME` | Username for the admin panel |
+| `ADMIN_PASSWORD` | Password for the admin panel |
+| `NEXT_PUBLIC_SITE_NAME` | Displayed in page titles (default: `Pure Deshi`) |
+
+### 3. Seed the database
+
+Run once to create your admin account, categories, and all 13 products with full bilingual content:
+
+```bash
+npm run seed
+```
+
+> Safe to re-run — it upserts rather than duplicating.
+
+### 4. Start the dev server
+
+```bash
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin](http://localhost:3000/admin) for the admin panel.
 
 ---
 
-## Project structure (what's new)
+## Project Structure
 
 ```
 pure-deshi/
 ├── app/
+│   ├── page.js                        # Homepage
+│   ├── products/[slug]/page.js        # Product detail page
 │   ├── delivery-info/page.js
 │   ├── return-policy/page.js
-│   └── faq/page.js
-├── components/site/
-│   ├── InfoPageClient.js          ← shared layout for the 3 pages above
-│   ├── DeliveryInfoContent.js
-│   ├── ReturnPolicyContent.js
-│   └── FaqContent.js
-├── lib/site-data.js               ← shared categories/settings fetch for simple pages
-├── models/Product.js              ← content fields now have bn + en versions
-└── scripts/seed.mjs               ← all 13 products now have full bilingual content
+│   ├── faq/page.js
+│   ├── admin/
+│   │   ├── login/page.js
+│   │   └── (dashboard)/
+│   │       ├── page.js                # Admin dashboard / KPI overview
+│   │       ├── products/
+│   │       ├── categories/
+│   │       ├── combos/
+│   │       ├── banners/
+│   │       ├── testimonials/
+│   │       └── settings/
+│   └── api/                           # REST API routes
+│       ├── products/
+│       ├── categories/
+│       ├── combos/
+│       ├── banners/
+│       ├── testimonials/
+│       ├── settings/
+│       ├── clicks/
+│       ├── upload/
+│       ├── auth/
+│       └── health/
+├── components/
+│   ├── site/                          # Public-facing UI components
+│   └── admin/                         # Admin panel UI components
+├── models/                            # Mongoose schemas
+│   ├── Product.js
+│   ├── Category.js
+│   ├── Combo.js
+│   ├── Banner.js
+│   ├── Testimonial.js
+│   ├── Settings.js
+│   ├── Admin.js
+│   └── ClickLog.js
+├── lib/
+│   ├── mongodb.js                     # DB connection singleton
+│   ├── auth.js                        # JWT helpers
+│   ├── cloudinary.js                  # Upload helper
+│   ├── whatsapp.js                    # Order message builder
+│   ├── bn.js                          # Bangla language utilities
+│   ├── site-data.js                   # Shared data fetching for pages
+│   ├── slugify.js
+│   └── errors.js
+└── scripts/
+    └── seed.mjs                       # One-time DB seeder
 ```
 
 ---
 
-## What's next (Phase 6)
+## Features
 
-Phase 6 is QA & polish — a once-over for mobile responsiveness, broken
-links, loading states, and cross-browser checks before launch. Phase 7
-after that is the actual go-live (domain, DNS, final Vercel deploy). Let me
-know once you've had a chance to add your real WhatsApp number and any
-photos you have, and we can move forward.
+### Public Site
+- **Homepage** — hero banner, featured products, combo deals, "Our Story" section, testimonials, and a trust badge strip
+- **Product pages** — bilingual (Bangla/English) intro, benefits, ingredients, usage guide, and "why us" section; WhatsApp order button
+- **Bilingual toggle** — language switcher on product pages; falls back to Bangla if English content is missing
+- **Static info pages** — Delivery Info, Return Policy, FAQ (bilingual)
+- **Floating WhatsApp button** — site-wide shortcut to start an order conversation
+
+### Admin Panel (`/admin`)
+- **Products** — create/edit/delete; bilingual fields side by side; Cloudinary image upload; badges, stock status, featured/trending flags
+- **Categories** — name, slug, icon, tagline (bilingual)
+- **Combos** — bundle multiple products at a discounted price with a cover image
+- **Banners** — homepage slider images with optional links
+- **Testimonials** — customer reviews with avatar initials, name, role, quote (bilingual)
+- **Settings** — WhatsApp number, phone number, Facebook URL, tagline, logo, "Our Story" text, trust badges — all editable without a code change
+- **Dashboard** — order-click stats (most-clicked products, clicks this month) via `ClickLog`
+
+---
+
+## Deployment (Vercel)
+
+1. Push to GitHub and import the repo in [Vercel](https://vercel.com).
+2. Add all variables from `.env.example` under **Settings → Environment Variables**.
+3. Deploy. Vercel handles the Next.js build automatically.
+
+> Make sure your MongoDB Atlas cluster allows connections from `0.0.0.0/0` (or Vercel's IP range) under **Network Access**.
+
+---
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run seed` | Seed the database (admin account + all products) |
+| `npm run lint` | Run ESLint |

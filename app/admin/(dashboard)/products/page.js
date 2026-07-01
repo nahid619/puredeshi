@@ -119,7 +119,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
+    <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] overflow-hidden">
       <div className="flex flex-wrap justify-between items-center gap-3.5 px-5 py-4.5 border-b border-[var(--admin-gray-100)]">
         <div className="flex gap-2.5 flex-1 max-w-[480px]">
           <input

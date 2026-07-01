@@ -102,6 +102,43 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading), sans-serif;
 }
 
+/* ── Admin dark mode ─────────────────────────────────────────────────────
+   Default for the admin panel is dark. AdminProviders persists the choice
+   to localStorage (key: pure-deshi-admin-theme). When the wrapper div
+   carries class "admin-dark" all these tokens override the :root values.
+   --admin-surface replaces every hardcoded bg-white in admin files.       */
+
+:root {
+  --admin-surface: #ffffff;
+}
+
+.admin-dark {
+  --admin-gray-50:  #0E1609;
+  --admin-gray-100: #172010;
+  --admin-gray-200: rgba(192, 221, 151, 0.13);
+  --admin-gray-400: #6B7A5A;
+  --admin-gray-500: #9FB587;
+  --admin-gray-700: var(--brand-green-100);
+  --admin-gray-900: #E8F5D6;
+  --admin-surface:  #1A2810;
+}
+
+/* Ensure native input/select/textarea text follows the token in dark mode */
+.admin-dark input,
+.admin-dark select,
+.admin-dark textarea {
+  color: var(--admin-gray-900);
+  color-scheme: dark;
+}
+.admin-dark input::placeholder,
+.admin-dark textarea::placeholder {
+  color: var(--admin-gray-400);
+}
+.admin-dark option {
+  background: #1A2810;
+  color: var(--admin-gray-900);
+}
+
 /* ── Admin panel component classes (Section 8 of spec) ───────────────────
    A few small custom classes for patterns (toggle switch, price styling)
    that are clearer as named classes than long Tailwind utility chains. */

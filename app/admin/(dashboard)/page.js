@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 function StatCard({ icon, iconBg, iconColor, value, label }) {
   return (
-    <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-5">
+    <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] p-5">
       <div
         className="w-[38px] h-[38px] rounded-[10px] flex items-center justify-center mb-3"
         style={{ background: iconBg }}
@@ -76,7 +76,7 @@ export default function DashboardPage() {
         <p className="text-sm text-[var(--brand-coral-600)] mt-3">{error}</p>
       )}
 
-      <div className="bg-white rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] mt-5">
+      <div className="bg-[var(--admin-surface)] rounded-xl shadow-[0_6px_18px_rgba(23,52,4,0.07)] mt-5">
         <div className="p-10 text-center text-[var(--admin-gray-500)] text-sm">
           <i className="ti ti-chart-bar text-3xl text-[var(--admin-gray-400)] block mb-2.5" />
           বিস্তারিত অ্যানালিটিক্স পরে যুক্ত করা যাবে — কোন প্রোডাক্টে সবচেয়ে বেশি ক্লিক হচ্ছে,
