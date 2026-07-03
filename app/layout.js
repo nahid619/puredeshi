@@ -1,5 +1,5 @@
 // app/layout.js
-import { Baloo_Da_2, Hind_Siliguri } from "next/font/google";
+import { Baloo_Da_2, Hind_Siliguri, Noto_Sans_Bengali } from "next/font/google";
 import "@tabler/icons-webfont/dist/tabler-icons.css";
 import "./globals.css";
 
@@ -17,6 +17,15 @@ const hindSiliguri = Hind_Siliguri({
   weight: ["400", "500", "600"],
 });
 
+// Numeral/price font — Noto Sans Bengali renders clean, standard Bengali
+// digit forms (০–৯). Baloo Da 2 and Hind Siliguri have stylised numeral
+// glyphs that cause the "১ looks wrong" rendering issue on price tags.
+const notoSansBengali = Noto_Sans_Bengali({
+  variable: "--font-numeral",
+  subsets: ["bengali", "latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 export const metadata = {
   title: "Pure Deshi — পিওর দেশি",
   description: "পিওর দেশি — বিশুদ্ধতার পরিচয় (Pure Deshi — The Mark of Purity)",
@@ -26,7 +35,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="bn"
-      className={`${balooDa2.variable} ${hindSiliguri.variable} h-full antialiased`}
+      className={`${balooDa2.variable} ${hindSiliguri.variable} ${notoSansBengali.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
