@@ -1,10 +1,22 @@
+// components/site/CategoryNav.js
 "use client";
 
+import { useCallback } from "react";
 import { useT } from "./SiteProviders";
 import { Reveal, RevealGroup } from "./Reveal";
 
 export default function CategoryNav({ categories }) {
   const t = useT();
+
+  // Hook must be called unconditionally — before any early return
+  const scrollTo = useCallback((e, slug) => {
+    const el = document.getElementById(slug);
+    if (el) {
+      e.preventDefault();
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
   if (categories.length === 0) return null;
 
   return (
@@ -16,7 +28,12 @@ export default function CategoryNav({ categories }) {
         </Reveal>
         <RevealGroup className="site-grid" style={{ marginTop: 26 }}>
           {categories.map((c) => (
-            <a key={c._id} className="site-card tile" href={`#${c.slug}`}>
+            <a
+              key={c._id}
+              className="site-card tile"
+              href={`#${c.slug}`}
+              onClick={(e) => scrollTo(e, c.slug)}
+            >
               <div className="circle">
                 <i className={`ti ${c.icon}`} />
               </div>

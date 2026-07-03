@@ -9,27 +9,20 @@ const LANG_KEY = "pure-deshi-lang";
 const THEME_KEY = "pure-deshi-theme";
 
 export function SiteProviders({ children }) {
-  const [lang, setLang] = useState("bn");
-  const [dark, setDark] = useState(false);
-
-  // Runs once on mount only: pick up whatever the visitor chose last time,
-  // if anything. Defaults stay "bn" / light until this runs, since
-  // localStorage doesn't exist during server rendering — so there's a
-  // brief moment on first paint where it shows the default before
-  // switching, which is an acceptable trade-off for not needing a cookie +
-  // server-side read just for a UI preference like this.
-  useEffect(() => {
+  const [lang, setLang] = useState(() => {
     try {
-      const savedLang = localStorage.getItem(LANG_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time read of an external system (localStorage) on mount, not a render-triggered cascade
-      if (savedLang === "bn" || savedLang === "en") setLang(savedLang);
-      const savedTheme = localStorage.getItem(THEME_KEY);
-      if (savedTheme === "dark") setDark(true);
-    } catch {
-      // Some browser privacy modes throw on localStorage access — fall
-      // back to defaults silently, it's not worth bothering the visitor.
-    }
-  }, []);
+      const saved = localStorage.getItem(LANG_KEY);
+      if (saved === "bn" || saved === "en") return saved;
+    } catch { /* SSR / privacy mode */ }
+    return "bn";
+  });
+
+  const [dark, setDark] = useState(() => {
+    try {
+      return localStorage.getItem(THEME_KEY) === "dark";
+    } catch { /* SSR / privacy mode */ }
+    return false;
+  });
 
   // Keep <html lang="..."> in sync (matches the mockup's setLang behavior)
   // and remember the choice for next time.

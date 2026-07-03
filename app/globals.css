@@ -283,9 +283,102 @@ body.dark .site-btn-soft { background: rgba(192,221,151,0.12); color: var(--bran
 .site-lang-pill:hover { background: rgba(255,255,255,0.22); }
 
 /* header */
+/* ── Smooth scroll ───────────────────────────────────────────────────────
+   scroll-behavior handles all native anchor navigation. JS scrollIntoView
+   with behavior:"smooth" is used in addition for Next.js Link clicks.     */
+html { scroll-behavior: smooth; }
+
+/* Smart header — slides off-screen when scrolling down, returns on up.
+   The .scrolled class adds a stronger shadow once the page is scrolled.
+   .header-hidden triggers the upward translate.                           */
 .site-header {
   background: var(--header-bg); backdrop-filter: blur(6px); position: sticky; top: 0; z-index: 30;
-  border-bottom: 1px solid var(--border); transition: background .3s ease, border-color .3s ease;
+  transition: transform 0.32s cubic-bezier(0.4,0,0.2,1), box-shadow 0.25s ease;
+}
+.site-header.scrolled   { box-shadow: 0 4px 20px rgba(0,0,0,0.20); border-bottom: 1px solid var(--border); }
+.site-header.header-hidden { transform: translateY(-110%); }
+
+/* Active nav link */
+.site-nav-links a.active,
+.site-mobile-nav a.active {
+  opacity: 1 !important;
+  color: var(--brand-amber-300);
+  position: relative;
+}
+.site-nav-links a.active::after {
+  content: "";
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 2px;
+  border-radius: 99px;
+  background: var(--brand-amber-300);
+}
+
+/* ── Hamburger button ────────────────────────────────────────────────── */
+.site-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+}
+.site-hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--nav-text);
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.2s ease, width 0.2s ease;
+}
+.site-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.site-hamburger.open span:nth-child(2) { opacity: 0; width: 0; }
+.site-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ── Mobile nav drawer ───────────────────────────────────────────────── */
+.site-mobile-nav {
+  display: flex;
+  flex-direction: column;
+  background: var(--header-bg);
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 8px 24px 20px;
+  gap: 2px;
+  animation: mobile-nav-in 0.22s ease;
+}
+@keyframes mobile-nav-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.site-mobile-nav a {
+  display: block;
+  padding: 12px 4px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--nav-text);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: color 0.15s;
+}
+.site-mobile-nav a:last-of-type { border-bottom: none; }
+.site-mobile-nav a:hover { color: var(--brand-amber-300); }
+.site-mobile-nav .site-btn {
+  margin-top: 12px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* ── Header actions wrapper ──────────────────────────────────────────── */
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 }
 .site-header .site-wrap { display: flex; align-items: center; justify-content: space-between; padding: 13px 24px; gap: 18px; flex-wrap: wrap; }
 .site-logo { display: flex; align-items: center; gap: 10px; }
@@ -468,6 +561,8 @@ body.dark .site-story .visual i { color: var(--brand-green-100); }
   .site-hero .cta { justify-content: center; }
   .spot-ring { display: none; }
   .site-nav-links { display: none; }
+  .site-hamburger { display: flex; }
+  .site-header-actions .site-btn { display: none; }
 }
 @media (max-width: 480px) {
   .site-products .site-grid { grid-template-columns: 1fr 1fr; }
