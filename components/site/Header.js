@@ -1,7 +1,7 @@
 // components/site/Header.js
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSite, useT } from "./SiteProviders";
 import { buildWhatsAppUrl } from "@/lib/whatsapp";
@@ -11,11 +11,9 @@ export default function Header({ categories, settings, hasActiveCombo }) {
   const t = useT();
   const waLink = buildWhatsAppUrl(settings.whatsappNumber);
 
-  const [menuOpen,     setMenuOpen]     = useState(false);
-  const [headerHidden, setHeaderHidden] = useState(false);
-  const [scrolled,     setScrolled]     = useState(false);
-  const [activeId,     setActiveId]     = useState("");
-  const lastScrollY = useRef(0);
+  const [menuOpen,  setMenuOpen]  = useState(false);
+  const [scrolled,  setScrolled]  = useState(false);
+  const [activeId,  setActiveId]  = useState("");
 
   const navItems = [
     ...categories.map((c) => ({ href: `/#${c.slug}`, id: c.slug, bn: c.nameBn, en: c.nameEn })),
@@ -23,19 +21,9 @@ export default function Header({ categories, settings, hasActiveCombo }) {
     { href: "/#story", id: "story", bn: "গল্প", en: "Our Story" },
   ];
 
-  // ── Smart header: hide when scrolling down, reveal when scrolling up ──
+  // ── Scrolled state — adds shadow once the page moves ────────────────
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 20);
-      if (y > lastScrollY.current && y > 90) {
-        setHeaderHidden(true);
-        setMenuOpen(false);   // close mobile drawer if it was open
-      } else {
-        setHeaderHidden(false);
-      }
-      lastScrollY.current = y;
-    };
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -69,11 +57,7 @@ export default function Header({ categories, settings, hasActiveCombo }) {
     }
   }, []);
 
-  const headerClass = [
-    "site-header",
-    scrolled      ? "scrolled"      : "",
-    headerHidden  ? "header-hidden" : "",
-  ].filter(Boolean).join(" ");
+  const headerClass = ["site-header", scrolled ? "scrolled" : ""].filter(Boolean).join(" ");
 
   return (
     <>
