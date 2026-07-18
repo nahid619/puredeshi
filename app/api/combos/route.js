@@ -2,6 +2,10 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
 import Combo from "@/models/Combo";
+// Imported so its schema is registered with Mongoose before we .populate("productIds")
+// below — without this, a cold serverless start that hasn't loaded this model
+// yet throws "Schema hasn't been registered for model 'Product'".
+import Product from "@/models/Product";
 
 export async function GET() {
   try {

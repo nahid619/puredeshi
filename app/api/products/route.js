@@ -2,6 +2,10 @@
 import { connectToDatabase } from "@/lib/mongodb";
 import { getSession } from "@/lib/auth";
 import Product from "@/models/Product";
+// Imported so its schema is registered with Mongoose before we .populate("category")
+// below — without this, a cold serverless start that hasn't loaded this model
+// yet throws "Schema hasn't been registered for model 'Category'".
+import Category from "@/models/Category";
 import { friendlyDbError } from "@/lib/errors";
 
 // GET /api/products — public. Supports ?category=<id> filter for later use
