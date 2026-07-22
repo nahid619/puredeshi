@@ -464,10 +464,10 @@ body.dark .site-trust .item i { color: var(--brand-green-100); }
 /* product cards */
 .site-products .site-grid { grid-template-columns: repeat(4,1fr); }
 .site-product .thumb {
-  height: 130px; background: linear-gradient(135deg, var(--brand-amber-50), #fff5e4);
+  aspect-ratio: 4 / 3; width: 100%; background: linear-gradient(135deg, var(--brand-amber-50), #fff5e4);
   display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
 }
-.site-product .thumb img { width: 100%; height: 100%; object-fit: cover; }
+.site-product .thumb img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
 .site-product .thumb i { font-size: 34px; color: var(--brand-amber-400); }
 .site-product .badge { position: absolute; top: 9px; left: 9px; font-size: 10.5px; font-weight: 600; padding: 4px 9px; border-radius: 999px; }
 .site-badge-sale { background: var(--brand-coral-50); color: var(--brand-coral-600); }

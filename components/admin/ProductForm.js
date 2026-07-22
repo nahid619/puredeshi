@@ -113,13 +113,21 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
       const res = await fetch("/api/upload", { method: "POST", body });
       const data = await res.json();
       if (!res.ok) {
+        // Upload failed — the local blob: preview only exists in this tab
+        // and would break everywhere else if saved, so fall back to the
+        // last known-good image instead of leaving the broken preview up.
+        update("imageUrl", previousUrl);
         setError(data.error || "ছবি আপলোড ব্যর্থ হয়েছে");
         return;
       }
       update("imageUrl", data.url);
     } catch {
+      update("imageUrl", previousUrl);
       setError("ছবি আপলোড করার সময় সংযোগ বিচ্ছিন্ন হয়ে গেছে");
     } finally {
+      // The blob: URL was only needed for the instant preview; release it
+      // now that we've either swapped in the real URL or reverted.
+      URL.revokeObjectURL(localUrl);
       setUploading(false);
     }
   }
@@ -130,6 +138,13 @@ export default function ProductForm({ product, categories, onSave, onCancel }) {
 
     if (!form.nameBn || !form.nameEn || !form.category || form.priceCurrent === "") {
       setError("নাম (বাংলা ও English), ক্যাটাগরি এবং বর্তমান দাম আবশ্যক");
+      return;
+    }
+
+    // Safety net: a blob: URL only exists in this browser tab and would be
+    // a broken image everywhere else, so never let one reach the database.
+    if (form.imageUrl?.startsWith("blob:")) {
+      setError("ছবি আপলোড এখনও সম্পন্ন হয়নি, একটু অপেক্ষা করুন বা আবার চেষ্টা করুন");
       return;
     }
 
