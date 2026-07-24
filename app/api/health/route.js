@@ -47,7 +47,7 @@ export async function GET() {
       result.cloudinary.message = "Connected successfully";
     } catch (err) {
       result.cloudinary.message = `Connection failed: ${
-        err.message || "unknown error"
+        err?.error?.message || err?.message || "unknown error"
       }`;
     }
   }
