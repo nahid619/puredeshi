@@ -7,7 +7,7 @@
 // without using the command line.
 
 import { connectToDatabase } from "@/lib/mongodb";
-import cloudinary from "@/lib/cloudinary";
+import cloudinary, { configureCloudinary } from "@/lib/cloudinary";
 
 export async function GET() {
   const result = {
@@ -41,6 +41,7 @@ export async function GET() {
   } else {
     result.cloudinary.configured = true;
     try {
+      configureCloudinary();
       const ping = await cloudinary.api.ping();
       result.cloudinary.connected = ping.status === "ok";
       result.cloudinary.message = "Connected successfully";

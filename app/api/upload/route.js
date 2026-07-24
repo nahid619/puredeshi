@@ -15,7 +15,7 @@
 // Admin-only — same session check as every other write operation.
 
 import { getSession } from "@/lib/auth";
-import cloudinary, { deleteCloudinaryImage } from "@/lib/cloudinary";
+import cloudinary, { deleteCloudinaryImage, configureCloudinary } from "@/lib/cloudinary";
 
 export const runtime = "nodejs"; // Buffer/cloudinary SDK need the Node runtime, not Edge
 
@@ -60,6 +60,7 @@ export async function POST(request) {
     const base64 = Buffer.from(arrayBuffer).toString("base64");
     const dataUri = `data:${file.type};base64,${base64}`;
 
+    configureCloudinary();
     const result = await cloudinary.uploader.upload(dataUri, {
       folder: "pure-deshi",
     });
