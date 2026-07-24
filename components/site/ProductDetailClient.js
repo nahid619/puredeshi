@@ -1,6 +1,8 @@
+// components/site/ProductDetailClient.js
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { SiteProviders, useSite, useT } from "./SiteProviders";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -43,6 +45,7 @@ function DetailList({ title, items, icon }) {
 function ProductDetailBody({ product, settings }) {
   const { lang } = useSite();
   const t = useT();
+  const router = useRouter();
   const isSale = product.priceRegular && product.priceRegular > product.priceCurrent;
   const content = product.content || {};
   const intro = pick(lang, content.intro, content.introEn);
@@ -54,6 +57,16 @@ function ProductDetailBody({ product, settings }) {
   return (
     <main className="site-section">
       <div className="site-wrap">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="site-back-btn"
+          aria-label={t("ফিরে যান", "Go back")}
+        >
+          <i className="ti ti-arrow-left" />
+          {t("ফিরে যান", "Back")}
+        </button>
+
         <p style={{ fontSize: 13, color: "var(--muted)", marginBottom: 22 }}>
           <Link href="/">{t("হোম", "Home")}</Link> /{" "}
           {product.category && (
